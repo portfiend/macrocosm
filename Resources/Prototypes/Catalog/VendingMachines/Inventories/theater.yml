@@ -1,11 +1,11 @@
-# DEN: Autodrobe's inventory is sorted into three sections:
+# MACROCOSM: Autodrobe's inventory is sorted into three sections:
 # "Performer" job clothing (clown/mime), costume bundles, and miscellaneous accessories.
 
 - type: vendingMachineInventory
   id: AutoDrobeInventory
   startingInventory:
     ## DEN comment - Section 1 - Performer job clothing
-    # BEGIN Den: Costume bundles
+    # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatJester: 1
     # ClothingUniformJumpsuitJester: 1
     # ClothingHeadHatJesterAlt: 1
@@ -13,13 +13,13 @@
     # ClothingShoesJester: 2
     CostumeBundleJester: 1
     # END Den
-    ClothingHeadHatBeretFrench: 2 # Den: Moved to performer section
-    ClothingMaskSadMime: 1 # Den: Moved to performer section
-    ClothingMaskScaredMime: 1 # Den: Moved to performer section
+    ClothingHeadHatBeretFrench: 2 # Macrocosm: Moved to performer section
+    ClothingMaskSadMime: 1 # Macrocosm: Moved to performer section
+    ClothingMaskScaredMime: 1 # Macrocosm: Moved to performer section
     ClothingOuterWinterClown: 1
     ClothingOuterWinterMime: 1
     ClothingOuterWinterMusician: 1
-    ClothingOuterClownPriest: 1 # Den: Moved to performer section
+    ClothingOuterClownPriest: 1 # Macrocosm: Moved to performer section
 
     # DEN comment - Section 2 - Costume bundles
     # DEN start: Costume bundles
@@ -38,29 +38,29 @@
 
     # DEN comment - Section 3 - Unbundled accessories
     ClothingMaskJoy: 2
-    # BEGIN Den: Costume bundles
+    # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatCardborg: 2
     # ClothingOuterCardborg: 2
     # END Den
     ClothingHeadHatSombrero: 2
     ClothingOuterPonchoClassic: 2
-    # BEGIN Den: Costume bundles
+    # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatPwig: 2
     # ClothingOuterRobesJudge: 2
     # END Den
     ClothingOuterPoncho: 2
-    # BEGIN Den: Costume bundles, etc.
+    # BEGIN Macrocosm: Costume bundles, etc.
     # ClothingHeadHatSantahat: 2
     # ClothingOuterSanta: 2
     # ClothingHeadHatSkub: 2
     # ClothingOuterSkub: 2
-    # ClothingHeadHatBeretFrench: 2 # Den: Move this up with performer items
+    # ClothingHeadHatBeretFrench: 2 # Macrocosm: Move this up with performer items
     # ClothingOuterSuitChicken: 2
     # ClothingHeadHatChickenhead: 2
     # ClothingOuterSuitMonkey: 2
     # END Den
     ClothingHeadHatPumpkin: 2
-    # BEGIN Den: Costume bundles
+    # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatShrineMaidenWig: 2
     # ClothingOuterSuitShrineMaiden: 2
     # Gohei: 2
@@ -73,22 +73,22 @@
     ClothingHeadPaperSackSmile: 2
     ClothingEyesBlindfold: 1
     ClothingHeadRastaHat: 2
-    # BEGIN Den: Costume bundles, etc.
+    # BEGIN Macrocosm: Costume bundles, etc.
     # ClothingUniformJumpsuitDameDane: 2
     # ClothingShoesDameDane: 2
     # ClothingOuterDameDane: 2
-    # ClothingOuterClownPriest: 1 # Den: Move this up with performer items
-    # ClothingMaskSadMime: 1 # Den: Move this up with performer items
-    # ClothingMaskScaredMime: 1 # Den: Move this up with performer items
+    # ClothingOuterClownPriest: 1 # Macrocosm: Move this up with performer items
+    # ClothingMaskSadMime: 1 # Macrocosm: Move this up with performer items
+    # ClothingMaskScaredMime: 1 # Macrocosm: Move this up with performer items
     # END Den
     ClothingUniformJumpsuitKimono: 1
     ClothingHeadHatCasa: 1
     FoodPoppy: 1
-    # BEGIN Den: Costume bundles
+    # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatGladiator: 1
     # ClothingUniformJumpsuitGladiator: 1
     # END Den
-    # TODO DEN: Consider consolidating cowboy accessories into bundles.
+    # TODO MACROCOSM: Consider consolidating cowboy accessories into bundles.
     # I'm not doing this right now b/c they're not "costumes" - just hats/boots.
     ClothingHeadHatCowboyBrown: 1
     ClothingHeadHatCowboyBlack: 1

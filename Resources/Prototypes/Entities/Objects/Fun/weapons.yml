@@ -211,7 +211,7 @@
       sprite: Objects/Weapons/Melee/cutlass.rsi
     shape:
     - 0,0,0,2
-  - type: Tag # DEN: Allow item be inserted in costume bundles
+  - type: Tag # MACROCOSM: Allow item be inserted in costume bundles
     tags:
     - CostumeItem
 
