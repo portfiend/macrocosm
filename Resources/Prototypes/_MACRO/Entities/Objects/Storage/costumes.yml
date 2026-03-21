@@ -66,6 +66,7 @@
 - type: entity
   parent: BaseCostumeBundle
   id: EmptyCostumeBundle
+  suffix: Empty
   description: A bag for storing assorted costume parts.
   components:
   - type: Sprite
