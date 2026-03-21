@@ -1,5 +1,4 @@
-# alphabetical order PLEASE
-# also document their purpose
+# Sort all tags in alphabetical order and document their purpose here
 
 - type: Tag
   id: CostumeItem # Used for non-clothing items that should be allowed to fit in costume bundles.
