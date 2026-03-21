@@ -30,7 +30,7 @@
   description: A bag containing assorted costume parts.
   components:
   - type: Sprite
-    sprite: _DEN/Objects/Storage/costume_bundle.rsi
+    sprite: _MACRO/Objects/Storage/costume_bundle.rsi
     layers:
     - state: outfit-1
       map: [ "enum.StorageFillLayers.Fill" ]
@@ -41,13 +41,12 @@
     - state: label
       color: "#dd6b17"
   - type: Icon
-    sprite: _DEN/Objects/Storage/costume_bundle.rsi
+    sprite: _MACRO/Objects/Storage/costume_bundle.rsi
     state: icon
   - type: Item
     size: Large
     storedRotation: 90
     heldPrefix: empty
-    # sprite: _DEN/Objects/Storage/costume_bundle.rsi
   - type: Storage
     maxItemSize: Normal
     grid:
@@ -70,7 +69,7 @@
   description: A bag for storing assorted costume parts.
   components:
   - type: Sprite
-    sprite: _DEN/Objects/Storage/costume_bundle.rsi
+    sprite: _MACRO/Objects/Storage/costume_bundle.rsi
     layers:
     - state: outfit-0 # starts with nothing
       map: [ "enum.StorageFillLayers.Fill" ]
