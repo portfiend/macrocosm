@@ -126,8 +126,11 @@
       entity_storage: !type:AllSelector
         children:
         - id: BarberScissors
-        - id: ClothingOuterSuitMonkey
-        - id: ClothingHeadHatAnimalMonkey
+        # Begin DEN: Costume bundles
+        # - id: ClothingOuterSuitMonkey
+        # - id: ClothingHeadHatAnimalMonkey
+        - id: CostumeBundleMonkey
+        # End DEN
         - id: ClothingUniformJumpskirtJanimaid
         - id: ClothingUniformJumpskirtOldDress
         - id: ClothingHeadHatMagician
@@ -151,11 +154,14 @@
           - id: ClothingMaskMime
           - id: ClothingBeltSuspendersRed
           - id: ClothingBeltSuspendersBlack
-        - !type:AllSelector # Performer starter kit
-          children:
-          - id: ClothingUniformJumpskirtPerformer
-          - id: ClothingShoesBootsPerformer
-          - id: ClothingHeadPerformerWig
+        # Begin DEN: Costume bundles
+        # - !type:AllSelector # Performer starter kit
+        #   children:
+        #   - id: ClothingUniformJumpskirtPerformer
+        #   - id: ClothingShoesBootsPerformer
+        #   - id: ClothingHeadPerformerWig
+        - id: CostumeBundlePerformer
+        # End DEN
 
 - type: entity
   parent: CrateGenericSteel

@@ -1,0 +1,101 @@
+# Costume bundles that represent uniforms for specific jobs - for example, "alt costumes" for clowns.
+# =======================
+
+# TODO: Port from Impstation
+# - type: entity
+#   parent: BaseCostumeBundle
+#   id: CostumeBundleCircusClown
+#   name: circus clown costume bundle
+#   components:
+#   - type: Sprite
+#     layers:
+#     - state: outfit-1
+#       map: [ "enum.StorageFillLayers.Fill" ]
+#       color: "#ffd85d"
+#     - state: wrapper-fill
+#       color: "#ffffff22"
+#     - state: wrapper
+#     - state: label
+#       color: "#74ff33"
+#   - type: EntityTableContainerFill
+#     containers:
+#       storagebase: !type:AllSelector
+#         children:
+#         - id: ClothingHeadHatCircusClown
+#         - id: ClothingMaskClownNose
+#         - id: ClothingNeckRuffle
+#         - id: ClothingUniformCircusClown
+#         - id: ClothingShoesCircus
+
+- type: entity
+  parent: BaseCostumeBundle
+  id: CostumeBundleJester
+  name: jester costume bundle
+  components:
+  - type: Sprite
+    layers:
+    - state: outfit-1
+      map: [ "enum.StorageFillLayers.Fill" ]
+      color: "#dd1818"
+    - state: wrapper-fill
+      color: "#ffffff22"
+    - state: wrapper
+    - state: label
+      color: "#74ff33"
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: ClothingHeadHatJester
+        - id: ClothingHeadHatJesterAlt
+        - id: ClothingUniformJumpsuitJester
+        - id: ClothingUniformJumpsuitJesterAlt
+        - id: ClothingShoesJester
+        - id: ClothingShoesJester
+
+# TODO: Port from Impstation
+# - type: entity
+#   parent: BaseCostumeBundle
+#   id: CostumeBundleMusicianLoungeSinger
+#   name: lounge singer costume bundle
+#   components:
+#   - type: Sprite
+#     layers:
+#     - state: outfit-1
+#       map: [ "enum.StorageFillLayers.Fill" ]
+#       color: "#463c6a"
+#     - state: wrapper-fill
+#       color: "#ffffff22"
+#     - state: wrapper
+#     - state: label
+#       color: "#6f56b8"
+#   - type: EntityTableContainerFill
+#     containers:
+#       storagebase: !type:AllSelector
+#         children:
+#         - id: ClothingUniformMusicianSingerDress
+#         - id: ClothingHandsMusicianSingerGloves
+#         - id: ClothingNeckFeatherBoa
+
+# TODO: Port from Impstation
+# - type: entity
+#   parent: BaseCostumeBundle
+#   id: CostumeBundleMusicianMarching
+#   name: marching band costume bundle
+#   components:
+#   - type: Sprite
+#     layers:
+#     - state: outfit-1
+#       map: [ "enum.StorageFillLayers.Fill" ]
+#       color: "#463c6a"
+#     - state: wrapper-fill
+#       color: "#ffffff22"
+#     - state: wrapper
+#     - state: label
+#       color: "#6f56b8"
+#   - type: EntityTableContainerFill
+#     containers:
+#       storagebase: !type:AllSelector
+#         children:
+#         - id: ClothingHeadHatMusicianShako
+#         - id: ClothingUniformJumpsuitMusicianMarchingBand
