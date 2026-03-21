@@ -1,10 +1,10 @@
-# MACROCOSM: Autodrobe's inventory is sorted into three sections:
+# Macrocosm: Autodrobe's inventory is sorted into three sections:
 # "Performer" job clothing (clown/mime), costume bundles, and miscellaneous accessories.
 
 - type: vendingMachineInventory
   id: AutoDrobeInventory
   startingInventory:
-    ## DEN comment - Section 1 - Performer job clothing
+    ## Macrocosm comment - Section 1 - Performer job clothing
     # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatJester: 1
     # ClothingUniformJumpsuitJester: 1
@@ -12,7 +12,7 @@
     # ClothingUniformJumpsuitJesterAlt: 1
     # ClothingShoesJester: 2
     CostumeBundleJester: 1
-    # END Den
+    # END Macrocosm
     ClothingHeadHatBeretFrench: 2 # Macrocosm: Moved to performer section
     ClothingMaskSadMime: 1 # Macrocosm: Moved to performer section
     ClothingMaskScaredMime: 1 # Macrocosm: Moved to performer section
@@ -21,8 +21,8 @@
     ClothingOuterWinterMusician: 1
     ClothingOuterClownPriest: 1 # Macrocosm: Moved to performer section
 
-    # DEN comment - Section 2 - Costume bundles
-    # DEN start: Costume bundles
+    # Macrocosm comment - Section 2 - Costume bundles
+    # Macrocosm start: Costume bundles
     CostumeBundleCardborg: 2
     CostumeBundleChicken: 2
     CostumeBundleGladiator: 2
@@ -34,20 +34,20 @@
     CostumeBundleSkub: 2
     CostumeBundleWitch: 2
     CostumeBundleYakuza: 2
-    # DEN end
+    # Macrocosm end
 
-    # DEN comment - Section 3 - Unbundled accessories
+    # Macrocosm comment - Section 3 - Unbundled accessories
     ClothingMaskJoy: 2
     # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatCardborg: 2
     # ClothingOuterCardborg: 2
-    # END Den
+    # END Macrocosm
     ClothingHeadHatSombrero: 2
     ClothingOuterPonchoClassic: 2
     # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatPwig: 2
     # ClothingOuterRobesJudge: 2
-    # END Den
+    # END Macrocosm
     ClothingOuterPoncho: 2
     # BEGIN Macrocosm: Costume bundles, etc.
     # ClothingHeadHatSantahat: 2
@@ -58,7 +58,7 @@
     # ClothingOuterSuitChicken: 2
     # ClothingHeadHatChickenhead: 2
     # ClothingOuterSuitMonkey: 2
-    # END Den
+    # END Macrocosm
     ClothingHeadHatPumpkin: 2
     # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatShrineMaidenWig: 2
@@ -68,7 +68,7 @@
     # ClothingHeadHatWitch1: 2
     # ClothingHeadHatRedRacoon: 2
     # ClothingOuterRedRacoon: 2
-    # END Den
+    # END Macrocosm
     ClothingHeadPaperSack: 2
     ClothingHeadPaperSackSmile: 2
     ClothingEyesBlindfold: 1
@@ -80,15 +80,15 @@
     # ClothingOuterClownPriest: 1 # Macrocosm: Move this up with performer items
     # ClothingMaskSadMime: 1 # Macrocosm: Move this up with performer items
     # ClothingMaskScaredMime: 1 # Macrocosm: Move this up with performer items
-    # END Den
+    # END Macrocosm
     ClothingUniformJumpsuitKimono: 1
     ClothingHeadHatCasa: 1
     FoodPoppy: 1
     # BEGIN Macrocosm: Costume bundles
     # ClothingHeadHatGladiator: 1
     # ClothingUniformJumpsuitGladiator: 1
-    # END Den
-    # TODO MACROCOSM: Consider consolidating cowboy accessories into bundles.
+    # END Macrocosm
+    # TODO Macrocosm: Consider consolidating cowboy accessories into bundles.
     # I'm not doing this right now b/c they're not "costumes" - just hats/boots.
     ClothingHeadHatCowboyBrown: 1
     ClothingHeadHatCowboyBlack: 1
