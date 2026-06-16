@@ -5,6 +5,9 @@ using Content.Shared._MACRO.Species.Kodepiia.Consume.Components;
 
 namespace Content.Shared._MACRO.Species.Kodepiia.Consume;
 
+/// <summary>
+/// This system handles entities that have been consumed by entites with the ConsumeActionComponent.
+/// </summary>
 public sealed partial class ConsumedSystem : EntitySystem
 {
     public override void Initialize()

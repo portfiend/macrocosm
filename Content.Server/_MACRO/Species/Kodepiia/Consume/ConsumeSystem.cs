@@ -59,25 +59,26 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
 
     private void OnConsumeAction(Entity<ConsumeActionComponent> ent, ref ConsumeEvent args)
     {
+        // Check if we have a mouth.
         if (!_ingestion.HasMouthAvailable(args.Performer, args.Performer))
         {
             _popup.PopupClient(Loc.GetString(ent.Comp.ConsumeFailByBlock), ent, ent);
             return;
         }
 
+        // Check if the target passes the whitelist and blacklist.
         if (!_whitelist.CheckBoth(args.Target, ent.Comp.Blacklist, ent.Comp.Whitelist))
         {
             _popup.PopupEntity(Loc.GetString(ent.Comp.ConsumeFailByInedible, ("target", Identity.Entity(args.Target, EntityManager))), ent, ent);
             return;
         }
 
+        // Check if the entity is or is not incapacitated.
         if (!_mobState.IsIncapacitated(args.Target))
         {
             _popup.PopupEntity(Loc.GetString(ent.Comp.ConsumeFailByIncapacitated, ("target", Identity.Entity(args.Target, EntityManager))), ent, ent);
             return;
         }
-
-        PlayMeatySound(ent);
 
         if (!TryComp<PhysicsComponent>(args.Target, out var targetPhysics))
             return;
@@ -85,6 +86,7 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
         if (!TryComp<PhysicsComponent>(args.Performer, out var performerPhysics))
             return;
 
+        // Setup the doafter.
         var doargs = new DoAfterArgs(EntityManager,
             ent,
             targetPhysics.Mass / performerPhysics.Mass * ent.Comp.BaseConsumeSpeed,
@@ -92,6 +94,7 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
             ent,
             args.Target);
 
+        // Do the popup for ourselves.
         if (ent.Comp.PopupSelfStart != null)
         {
             var popupSelf = Loc.GetString(ent.Comp.PopupSelfStart,
@@ -100,6 +103,7 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
             _popup.PopupEntity(popupSelf, ent, ent);
         }
 
+        // Do the popup for others.
         if (ent.Comp.PopupOthersStart != null)
         {
             var popupOthers = Loc.GetString(ent.Comp.PopupOthersStart,
@@ -109,6 +113,10 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
         }
 
         _doAfter.TryStartDoAfter(doargs);
+
+        // Play our sound
+        PlaySound(ent);
+
         args.Handled = true;
     }
 
@@ -146,6 +154,12 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
         Consume(ent, (args.Target.Value,targetPhysics), ev);
     }
 
+    /// <summary>
+    /// Have an entity consume another entity.
+    /// </summary>
+    /// <param name="consumer">Entity that consumes.</param>
+    /// <param name="target">Entity that IS consumed.</param>
+    /// <param name="consumeEvent">The event that lead this consumption.</param>
     private void Consume(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent> target, ConsumeActionEvent consumeEvent)
     {
         // Drink Bloodstream
@@ -176,7 +190,7 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
         EnsureComp<ConsumedComponent>(target.Owner, out var consumed);
 
         // Increment the consumed value on the victim.
-        consumed.ConsumedValue += 1;
+        consumed.ConsumedValue += consumer.Comp.ConsumptionAmount;
         Dirty(target.Owner, consumed);
 
         var gibThreshold = _configurationManager.GetCVar(MacroCCVars.ConsumptionGibThreshold);
@@ -193,9 +207,10 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
             _damage.TryChangeDamage(target.Owner, consumer.Comp.Damage, true, false);
 
             // Play eat sound, don't need to play it if they gib because that's already a sound.
-            PlayMeatySound(consumer);
+            PlaySound(consumer);
         }
     }
+
     private void OnConsumptionEvent(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeActionEvent> args)
     {
         if (!_solutionContainer.ResolveSolution(ent.Owner, StomachSystem.DefaultSolutionName, ref ent.Comp.Solution, out var stomachSol))
@@ -207,7 +222,11 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
         args.Args = new ConsumeActionEvent(LargestStomach: ent, LargestVolume: stomachSol.AvailableVolume);
     }
 
-    public void PlayMeatySound(Entity<ConsumeActionComponent> ent)
+    /// <summary>
+    /// Play the consume sound defined by an entity.
+    /// </summary>
+    /// <param name="ent">Entity to get the sound from and to play on.</param>
+    private void PlaySound(Entity<ConsumeActionComponent> ent)
     {
         _audio.PlayPvs(ent.Comp.ConsumptionSound, ent, AudioParams.Default.WithVolume(-3f));
     }

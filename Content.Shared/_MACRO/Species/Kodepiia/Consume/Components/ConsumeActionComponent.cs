@@ -82,6 +82,12 @@ public sealed partial class ConsumeActionComponent : Component
     public float PortionDrunk = 0.1f;
 
     /// <summary>
+    /// How much of the entity we want to consume (keep in mind the default gib threshold is 12)
+    /// </summary>
+    [DataField]
+    public float ConsumptionAmount = 1f;
+
+    /// <summary>
     /// Sound that is played when the the victim is consumed.
     /// </summary>
     [DataField]
@@ -100,7 +106,7 @@ public sealed partial class ConsumeActionComponent : Component
     public LocId ConsumeFailByInedible = "consume-fail-inedible";
 
     /// <summary>
-    /// LocId of the failure popup that occurs when consuming isn't actually dead.
+    /// LocId of the failure popup that occurs when consuming isn't incapacitiated.
     /// </summary>
     [DataField]
     public LocId ConsumeFailByIncapacitated = "consume-fail-incapacitated";

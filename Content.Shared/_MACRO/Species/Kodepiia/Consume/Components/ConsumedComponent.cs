@@ -11,5 +11,5 @@ public sealed partial class ConsumedComponent : Component
     /// How consumed this entity is, incremented by one every time they're consumed.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public int ConsumedValue;
+    public float ConsumedValue;
 }

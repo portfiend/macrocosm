@@ -6,7 +6,7 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._MACRO.Species.Kodepiia;
 /// <summary>
-/// Handles kodepiia appearance scrambling.
+/// Handles kodepiia appearance scrambling, which is essentially randomizing their appearance.
 /// </summary>
 public abstract partial class SharedKodepiiaScramblerSystem : EntitySystem
 {
@@ -21,17 +21,21 @@ public abstract partial class SharedKodepiiaScramblerSystem : EntitySystem
         SubscribeLocalEvent<KodepiiaScramblerComponent, ComponentShutdown>(OnShutdown);
     }
 
-    public void OnStartup(Entity<KodepiiaScramblerComponent> ent, ref ComponentStartup args)
+    private void OnStartup(Entity<KodepiiaScramblerComponent> ent, ref ComponentStartup args)
     {
         _actionsSystem.AddAction(ent, ref ent.Comp.ScramblerAction, ent.Comp.ScramblerActionId);
     }
 
-    public void OnShutdown(Entity<KodepiiaScramblerComponent> ent, ref ComponentShutdown args)
+    private void OnShutdown(Entity<KodepiiaScramblerComponent> ent, ref ComponentShutdown args)
     {
         _actionsSystem.RemoveAction(ent.Owner, ent.Comp.ScramblerAction);
     }
 
-    public void PlaySound(Entity<KodepiiaScramblerComponent> ent)
+    /// <summary>
+    /// Play the scrambler sound on an entity.
+    /// </summary>
+    /// <param name="ent">Entity to play the scrambler sound on.</param>
+    protected internal void PlaySound(Entity<KodepiiaScramblerComponent> ent)
     {
         _audio.PlayPredicted(ent.Comp.ScramblerSound, ent, ent);
     }
