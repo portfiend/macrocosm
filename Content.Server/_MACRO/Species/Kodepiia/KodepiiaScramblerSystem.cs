@@ -9,6 +9,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Popups;
 using Content.Shared.Preferences;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 
 namespace Content.Server._MACRO.Species.Kodepiia;
@@ -16,6 +17,7 @@ namespace Content.Server._MACRO.Species.Kodepiia;
 public sealed partial class KodepiiaScramblerSystem : SharedKodepiiaScramblerSystem
 {
     [Dependency] private ActionsSystem _actionsSystem = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private HumanoidProfileSystem _humanoidProfile = default!;
     [Dependency] private SharedVisualBodySystem _visualBody = default!;
     [Dependency] private PopupSystem _popup = default!;
@@ -42,7 +44,7 @@ public sealed partial class KodepiiaScramblerSystem : SharedKodepiiaScramblerSys
         _popup.PopupEntity(popupOthers, ent, Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent), true, PopupType.MediumCaution);
 
         //Play your sound.
-        PlaySound(ent);
+        _audio.PlayEntity(ent.Comp.ScramblerSound, ent, ent);
 
         //Start the doafter.
         _doAfter.TryStartDoAfter(doargs);

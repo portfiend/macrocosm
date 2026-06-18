@@ -11,7 +11,6 @@ namespace Content.Shared._MACRO.Species.Kodepiia;
 public abstract partial class SharedKodepiiaScramblerSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actionsSystem = default!;
-    [Dependency] private SharedAudioSystem _audio = default!;
 
     public override void Initialize()
     {
@@ -29,15 +28,6 @@ public abstract partial class SharedKodepiiaScramblerSystem : EntitySystem
     private void OnShutdown(Entity<KodepiiaScramblerComponent> ent, ref ComponentShutdown args)
     {
         _actionsSystem.RemoveAction(ent.Owner, ent.Comp.ScramblerAction);
-    }
-
-    /// <summary>
-    /// Play the scrambler sound on an entity.
-    /// </summary>
-    /// <param name="ent">Entity to play the scrambler sound on.</param>
-    protected internal void PlaySound(Entity<KodepiiaScramblerComponent> ent)
-    {
-        _audio.PlayPredicted(ent.Comp.ScramblerSound, ent, ent);
     }
 }
 /// <summary>
