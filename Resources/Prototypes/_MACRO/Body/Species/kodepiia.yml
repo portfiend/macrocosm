@@ -272,7 +272,7 @@
     sprite: Mobs/Species/Human/organs.rsi
 
 - type: entity
-  parent: [ OrganBaseLungs, OrganKodepiiaInternal, OrganHumanMetabolizer ]
+  parent: [ OrganBaseLungs, OrganKodepiiaInternal, OrganKodepiiaMetabolizer ]
   id: OrganKodepiiaLungs
   name: fine coil
   description: "Like lungs, but stretchier...?"
