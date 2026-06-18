@@ -299,7 +299,7 @@
       - KodeEdible
 
 - type: entity
-  parent: [ OrganBaseLiver, OrganKodepiiaInternal, OrganHumanMetabolizer ]
+  parent: [ OrganBaseLiver, OrganKodepiiaInternal, OrganKodepiiaMetabolizer ]
   id: OrganKodepiiaLiver
 
 - type: entity
