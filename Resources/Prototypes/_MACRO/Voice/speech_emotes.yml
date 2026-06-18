@@ -19,7 +19,7 @@
   whitelist:
     components:
     - Vocal
-  chatMessages: [honks.]
+  chatMessages: ["chat-emote-msg-honks"]
   chatTriggers:
     - honk
     - honks
@@ -38,7 +38,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [rings.]
+  chatMessages: ["chat-emote-msg-rings"]
   chatTriggers:
     - ring
     - rings
@@ -58,7 +58,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [pews.]
+  chatMessages: ["chat-emote-msg-pews"]
   chatTriggers:
     - pew
     - pews
@@ -76,7 +76,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [bangs.]
+  chatMessages: ["chat-emote-msg-bangs"]
   chatTriggers:
     - bang
     - bangs
@@ -95,7 +95,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [beeps.]
+  chatMessages: ["chat-emote-msg-beeps"]
   chatTriggers:
     - beep
     - beeps
@@ -114,7 +114,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [revs.]
+  chatMessages: ["chat-emote-msg-revs"]
   chatTriggers:
     - rev
     - revs
@@ -133,7 +133,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: [booms.]
+  chatMessages: ["chat-emote-msg-booms"]
   chatTriggers:
     - boom
     - booms
