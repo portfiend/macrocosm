@@ -3,7 +3,7 @@
 
   Nanotrasen employs a variety of sapient species.
   <Box>
-    <GuideEntityEmbed Entity="MobHuman" Caption="Human"/>=
+    <GuideEntityEmbed Entity="MobHuman" Caption="Human"/>
     <GuideEntityEmbed Entity="MobMoth" Caption="Moth Person"/>
     <GuideEntityEmbed Entity="MobReptilian" Caption="Reptilian"/>
     <GuideEntityEmbed Entity="MobSlimePerson" Caption="Slime Person"/>
