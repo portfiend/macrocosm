@@ -283,7 +283,7 @@
   description: "Allegedly 'quirked up' with 'the sauce,' if rumors are to be believed."
 
 - type: entity
-  parent: [ OrganBaseStomach, OrganKodepiiaInternal, OrganHumanMetabolizer ]
+  parent: [ OrganBaseStomach, OrganKodepiiaInternal, OrganKodepiiaMetabolizer ]
   id: OrganKodepiiaStomach
   name: primary gullet
   description: "Leaky."
