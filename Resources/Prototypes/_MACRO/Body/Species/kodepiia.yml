@@ -140,7 +140,6 @@
       types:
         Blunt: 5
   - type: Butcherable
-    butcheringType: Spike
     spawned:
     - id: FoodMeatKodepiia
       amount: 5
