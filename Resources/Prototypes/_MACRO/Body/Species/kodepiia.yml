@@ -138,6 +138,7 @@
       collection: BoxingHit
     damage:
       types:
+        Blunt: 5
   - type: Butcherable
     spawned:
     - id: FoodMeatKodepiia
