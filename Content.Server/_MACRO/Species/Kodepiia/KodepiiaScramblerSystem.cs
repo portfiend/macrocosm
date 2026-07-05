@@ -75,7 +75,7 @@ public sealed partial class KodepiiaScramblerSystem : SharedKodepiiaScramblerSys
         var profile = HumanoidCharacterProfile.RandomWithSpecies(humanoid.Species);
 
         // Apply the profile to the visual body and regular body,
-        _visualBody.ApplyProfileTo(ent.Owner, profile);
+        _visualBody.ReplaceProfileWith(ent.Owner, profile);
         _humanoidProfile.ApplyProfileTo(ent.Owner, profile);
 
         // Handle more popping up stuff.

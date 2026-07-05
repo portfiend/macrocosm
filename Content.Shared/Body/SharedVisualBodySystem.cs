@@ -27,6 +27,7 @@ public abstract partial class SharedVisualBodySystem : EntitySystem
 
         InitializeModifiers();
         InitializeInitial();
+        InitializeMacrocosm(); // MACROCOSM add
     }
 
     private List<Marking> ResolveMarkings(List<Marking> markings, Color? skinColor, Color? eyeColor, Dictionary<Enum, MarkingsAppearance> appearances)
@@ -135,6 +136,7 @@ public abstract partial class SharedVisualBodySystem : EntitySystem
         }
     }
 
+    // Begin MACROCOSM - move this function out of the callback so it can be called elsewhere
     private void OnMarkingsOrganApplyMarkings(Entity<VisualOrganMarkingsComponent> ent, ref BodyRelayedEvent<ApplyOrganMarkingsEvent> args)
     {
         if (Comp<OrganComponent>(ent).Category is not { } category)
@@ -142,6 +144,13 @@ public abstract partial class SharedVisualBodySystem : EntitySystem
 
         if (!args.Args.Markings.TryGetValue(category, out var markingSet))
             return;
+
+        ApplyVisualOrganMarkings(ent, markingSet);
+    }
+
+    private void ApplyVisualOrganMarkings(Entity<VisualOrganMarkingsComponent> ent,
+        Dictionary<HumanoidVisualLayers, List<Marking>> markingSet)
+    {
 
         var groupProto = _prototype.Index(ent.Comp.MarkingData.Group);
         var organMarkings = ent.Comp.Markings.ShallowClone();
@@ -171,6 +180,7 @@ public abstract partial class SharedVisualBodySystem : EntitySystem
 
         SetOrganMarkings(ent, resolved);
     }
+    // End MACROCOSM
 }
 
 /// <summary>
