@@ -10,7 +10,7 @@ chat-emote-msg-rings = Rings
 chat-emote-name-rev = Rev
 chat-emote-msg-revs = Revs
 
-chat-emote-name-bomm = Boom
+chat-emote-name-boom = Boom
 chat-emote-msg-booms = Booms
 
 chat-emote-name-pew = Pew

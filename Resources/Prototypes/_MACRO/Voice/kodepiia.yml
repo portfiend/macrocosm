@@ -66,6 +66,14 @@
       collection: KodepiiaChirps
     Snarl:
       collection: VulpkaninSnarls
+    Howl:
+      collection: VulpkaninHowls
+    Bark:
+      collection: VulpkaninBarks
+    Growl:
+      collection: VulpkaninGrowls
+    Whine:
+      collection: VulpkaninWhines
     Honk:
       collection: KodepiiaHonks
     Weh:
