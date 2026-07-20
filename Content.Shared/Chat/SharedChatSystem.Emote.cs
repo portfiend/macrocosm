@@ -12,7 +12,7 @@ public abstract partial class SharedChatSystem
 
     private void CacheEmotes()
     {
-        var dict = new Dictionary<string, EmotePrototype>();
+        var dict = new Dictionary<string, List<EmotePrototype>>(); // Macro, list instead of individual
         var emotes = ProtoMan.EnumeratePrototypes<EmotePrototype>();
         foreach (var emote in emotes)
         {
