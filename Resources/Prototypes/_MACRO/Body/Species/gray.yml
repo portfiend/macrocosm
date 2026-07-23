@@ -159,7 +159,7 @@
     bloodReferenceSolution:
       reagents:
       - ReagentId: GrayBlood
-        Quantity: 300
+        Quantity: 600
 
 
 - type: entity
