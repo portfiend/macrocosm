@@ -98,7 +98,7 @@
   blacklist:
     components:
     - BorgChassis
-  chatMessages: ["chat-emote-msg-beeps"]
+  chatMessages: ["chat-emote-msg-beep"]
   chatTriggers:
     - beep
     - beeps
