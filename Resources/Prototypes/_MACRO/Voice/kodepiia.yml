@@ -8,7 +8,8 @@
     path: /Audio/_MACRO/Voice/Kodepiia/kodeexclaim.ogg
 
 - type: emoteSounds
-  id: Kodepiia
+  id: UnisexKodepiia
+  voiceSelectorName: humanoid-profile-editor-voice-neutral
   params:
     variation: 0.125
   sounds:
