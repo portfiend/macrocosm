@@ -115,10 +115,7 @@
     speechVerb: Kodepiia
     allowedEmotes: [ 'Bark', 'Snarl', 'Whine', 'Howl', 'Growl','Hiss', 'KodeHonk', 'KodeRing', 'KodePew', 'KodeBang', 'KodeBeep', 'KodeRev', 'Squish', 'Chitter', 'Squeak', 'Click', 'Squish', 'KodeBoom', 'Chirp'] # my extremely normal beast
   - type: Vocal
-    sounds:
-      Male: Kodepiia
-      Female: Kodepiia
-      Unsexed: Kodepiia
+    emoteSounds: UnisexKodepiia
   - type: Damageable
     damageModifierSet: Kodepiia
   - type: DamageVisuals

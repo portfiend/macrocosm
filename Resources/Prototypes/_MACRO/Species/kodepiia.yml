@@ -11,6 +11,12 @@
   lastNames: KodepiiaLast
   sexes:
   - Unsexed
+  defaultSoundsBySex:
+  - UnisexKodepiia
+  - UnisexKodepiia
+  - UnisexKodepiia
+  voices:
+  - UnisexKodepiia
   youngAge: 25
   oldAge: 40
 #  ancientAge: 70
