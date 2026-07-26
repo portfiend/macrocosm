@@ -4,12 +4,15 @@
   whitelist:
     components:
     - Vocal
+  category: Vocal
+  available: false
   chatMessages: ["chat-emote-msg-hiss"]
   chatTriggers:
   - hiss
   - hisses
   - hissed
 
+# Kode
 - type: emote
   id: KodeHonk
   name: chat-emote-name-honk
@@ -139,3 +142,15 @@
     - booms
     - boomed
     - booming
+
+# Ungu
+- type: emote
+  id: Moo
+  name: chat-emote-name-moo
+  category: Vocal
+  available: false
+  chatMessages: ["chat-emote-msg-moo"]
+  chatTriggers:
+    - moo
+    - moos
+    - mooed
