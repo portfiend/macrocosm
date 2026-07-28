@@ -7,6 +7,9 @@
   id: KodeEdible # Used for things kodepiia are able to eat.
 
 - type: Tag
+  id: OviniaEmotes # Used for Ovinia specific emotes
+
+- type: Tag
   id: SGD # SpeechRequiresEquipment whitelist on MobDecapoid.
 
 - type: Tag
@@ -14,4 +17,3 @@
 
 - type: Tag
   id: Vaporizer # SpeechRequiresEquipment whitelist on MobDecapoid.
-  
