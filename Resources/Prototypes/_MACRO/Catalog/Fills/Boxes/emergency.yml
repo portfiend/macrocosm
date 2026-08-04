@@ -134,9 +134,6 @@
         - id: WheatBushel
         - id: DrinkWaterBottleFull
 
-
-# Decapoid
-
 - type: entity
   parent: BoxCardboard
   id: BoxSurvivalKodepiia

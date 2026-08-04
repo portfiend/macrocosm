@@ -180,7 +180,7 @@
     sprite: _MACRO/Mobs/Species/Kodepiia/parts.rsi
 
 - type: entity
-  parent: OrganKodepiia
+  parent: [ OrganKodepiia, OrganBaseEdible ]
   id: OrganKodepiiaInternal
   abstract: true
   components:

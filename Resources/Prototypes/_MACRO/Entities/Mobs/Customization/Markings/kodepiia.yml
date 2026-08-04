@@ -966,7 +966,6 @@
   id: KodeTailStubby
   bodyPart: Tail
   groupWhitelist: [ Kodepiia ]
-  forcedColoring: true
   sprites:
   - sprite: _MACRO/Mobs/Customization/Kodepiia/tail.rsi
     state: stubby
@@ -975,7 +974,6 @@
   id: KodeVoxTail
   bodyPart: Tail
   groupWhitelist: [ Kodepiia ]
-  forcedColoring: true
   sprites:
   - sprite: _MACRO/Mobs/Customization/Kodepiia/tail.rsi
     state: vox

@@ -127,7 +127,7 @@ marking-KodeSharkminnowEyes = Eyes (Sharkminnow)
 marking-KodeSharkminnowEyes-sharkminnow = Eyes
 
 marking-SquareEyes = Eyes (Square)
-marking-SquareEyes-squareeyes = Eyes
+marking-SquareEyes-square = Eyes
 
 marking-SquareEyesUnshaded = Eyes (Square Reflective)
 marking-SquareEyesUnshaded-square = Eyes
