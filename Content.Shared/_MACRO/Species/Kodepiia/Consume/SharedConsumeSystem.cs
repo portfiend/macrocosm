@@ -63,18 +63,30 @@ public abstract partial class SharedConsumeSystem : EntitySystem
             invokeImmediately: true);
     }
 
+    /// <summary>
+    ///     Give consumers an action to targeting entities for consumption.
+    /// </summary>
+    /// <param name="ent">The consumer entity.</param>
     [SubscribeLocalEvent]
     private void OnStartup(Entity<ConsumeActionComponent> ent, ref ComponentStartup args)
     {
         _actions.AddAction(ent, ref ent.Comp.ConsumeAction, ent.Comp.ConsumeActionId);
     }
 
+    /// <summary>
+    ///     Remove the "consume" action from consumers.
+    /// </summary>
+    /// <param name="ent">The consumer entity.</param>
     [SubscribeLocalEvent]
     private void OnShutdown(Entity<ConsumeActionComponent> ent, ref ComponentShutdown args)
     {
         _actions.RemoveAction(ent.Owner, ent.Comp.ConsumeAction);
     }
 
+    /// <summary>
+    ///     Attempt to begin consuming a target if a valid target is selected.
+    /// </summary>
+    /// <param name="ent">The consumer entity.</param>
     [SubscribeLocalEvent]
     private void OnConsumeAction(Entity<ConsumeActionComponent> ent, ref ConsumeEvent args)
     {
@@ -121,10 +133,18 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         args.Handled = true;
     }
 
+    /// <summary>
+    ///     Take a bite out of a valid target if we successfully finish consumption.
+    /// </summary>
+    /// <param name="ent">The consumer entity.</param>
     [SubscribeLocalEvent]
     private void OnConsumeDoAfter(Entity<ConsumeActionComponent> ent, ref ConsumeDoAfterEvent args)
     {
-        if (args.Target == null || args.Cancelled || !TryComp<PhysicsComponent>(args.Target, out var targetPhysics))
+        if (args.Cancelled
+            || args.Target == null
+            || !_ingestion.HasMouthAvailable(ent.Owner, ent.Owner)
+            || !_whitelist.CheckBoth(args.Target, ent.Comp.Blacklist, ent.Comp.Whitelist)
+            || !_mobState.IsIncapacitated(args.Target.Value))
             return;
 
         var ev = new ConsumeGetLargestStomachEvent();
@@ -139,10 +159,14 @@ public abstract partial class SharedConsumeSystem : EntitySystem
             return;
         }
 
-        Consume(ent, (args.Target.Value, targetPhysics), ev.LargestStomach.Value.AsNullable());
+        Consume(ent, args.Target.Value, ev.LargestStomach.Value.AsNullable());
         DoConsumeSuccessPopup(ent, args.Target.Value);
     }
 
+    /// <summary>
+    ///     Update the largest stomach if this stomach is larger than the previous one.
+    /// </summary>
+    /// <param name="ent">The stomach entity.</param>
     [SubscribeLocalEvent]
     private void OnGetLargestStomach(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeGetLargestStomachEvent> args)
     {
@@ -297,7 +321,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// <param name="target">Entity that IS consumed.</param>
     /// <param name="stomach">The consumer's largest available stomach.</param>
     private void Consume(Entity<ConsumeActionComponent> consumer,
-        Entity<PhysicsComponent?> target,
+        EntityUid target,
         Entity<StomachComponent?> stomach)
     {
         IngestTargetContents(consumer, target, stomach);
@@ -312,7 +336,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// <param name="target">The poor guy who's getting nibbled on.</param>
     /// <param name="stomach">The consumer's largest available stomach.</param>
     private void IngestTargetContents(Entity<ConsumeActionComponent> consumer,
-        Entity<PhysicsComponent?> target,
+        EntityUid target,
         Entity<StomachComponent?> stomach)
     {
         if (!Resolve(stomach.Owner, ref stomach.Comp))
