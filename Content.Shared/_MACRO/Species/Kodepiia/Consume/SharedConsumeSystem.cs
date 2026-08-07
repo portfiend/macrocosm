@@ -162,6 +162,19 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         DoConsumeSuccessPopup(ent, args.Target.Value);
     }
 
+    [SubscribeLocalEvent]
+    private void OnGetLargestStomach(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeGetLargestStomachEvent> args)
+    {
+        if (!TryGetStomachSolution(ent.AsNullable(), out var stomachSol))
+            return;
+
+        // If this stomach is larger than the previous, then we replace the largest stomach with this one
+        var largest = args.Args.LargestStomach;
+        if (largest != null && TryGetStomachSolution(largest.Value.Owner, out var largestSol)
+            && stomachSol.AvailableVolume > largestSol.AvailableVolume)
+            args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent);
+    }
+
     /// <summary>
     ///     Show popups for a successful "consume" operation.
     /// </summary>
@@ -304,19 +317,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         _forensics.TransferDna(target, consumer, false);
         _damage.TryChangeDamage(target, consumer.Comp.Damage, true, false);
         PlayConsumeSound(consumer);
-    }
-
-    [SubscribeLocalEvent]
-    private void OnConsumptionEvent(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeGetLargestStomachEvent> args)
-    {
-        if (!TryGetStomachSolution(ent.AsNullable(), out var stomachSol))
-            return;
-
-        // If this stomach is larger than the previous, then we replace the largest stomach with this one
-        var largest = args.Args.LargestStomach;
-        if (largest != null && TryGetStomachSolution(largest.Value.Owner, out var largestSol)
-            && stomachSol.AvailableVolume > largestSol.AvailableVolume)
-            args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent);
     }
 
     private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
