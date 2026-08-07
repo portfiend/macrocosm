@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Content.Shared._MACRO.CCVar;
 using Content.Shared._MACRO.Species.Kodepiia.Consume.Components;
 using Content.Shared.Actions;
@@ -5,6 +6,7 @@ using Content.Shared.Atmos.Rotting;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
+using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
@@ -17,7 +19,6 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Popups;
 using Content.Shared.Whitelist;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Physics.Components;
@@ -31,7 +32,7 @@ namespace Content.Shared._MACRO.Species.Kodepiia.Consume;
 /// </summary>
 public abstract partial class SharedConsumeSystem : EntitySystem
 {
-    [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private IConfigurationManager _config = default!;
 
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -49,11 +50,18 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private StomachSystem _stomach = default!;
 
+    private int _gibThreshold;
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<BodyComponent, ConsumeGetLargestStomachEvent>(_body.RelayEvent);
+
+        Subs.CVar(_config,
+            MacroCCVars.ConsumptionGibThreshold,
+            value => _gibThreshold = value,
+            invokeImmediately: true);
     }
 
     [SubscribeLocalEvent]
@@ -142,7 +150,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         RaiseLocalEvent(ent, ref ev);
 
         // All stomachs are full or we have no stomachs
-        if (ev.LargestStomach.Comp == null)
+        if (ev.LargestStomach == null)
         {
             _popup.PopupClient(Loc.GetString(ent.Comp.ConsumeFailByFullStomach, ("verb", "eat")), ent, ent);
             return;
@@ -164,7 +172,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
             _popup.PopupEntity(popupOthers, ent, Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent), true, PopupType.MediumCaution);
         }
 
-        Consume(ent, (args.Target.Value, targetPhysics), ev);
+        Consume(ent, (args.Target.Value, targetPhysics), ev.LargestStomach.Value.AsNullable());
     }
 
     /// <summary>
@@ -172,68 +180,140 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// </summary>
     /// <param name="consumer">Entity that consumes.</param>
     /// <param name="target">Entity that IS consumed.</param>
-    /// <param name="consumeEvent">The event that lead this consumption.</param>
-    private void Consume(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent> target, ConsumeGetLargestStomachEvent consumeEvent)
+    /// <param name="stomach">The consumer's largest available stomach.</param>
+    private void Consume(Entity<ConsumeActionComponent> consumer,
+        Entity<PhysicsComponent?> target,
+        Entity<StomachComponent?> stomach)
     {
-        // Drink Bloodstream
-        _solutionContainer.TryGetSolution(target.Owner, consumer.Comp.SolutionToDrinkFrom, out var targetSolutionComp, out var targetBloodstream);
-        if (targetBloodstream != null && targetSolutionComp != null)
+        IngestTargetContents(consumer, target, stomach);
+        TakeABite(consumer, target);
+    }
+
+    /// <summary>
+    ///     Make a consumer ingest a portion of blood and food reagents (e.g. uncooked proteins)
+    ///     from a target entity.
+    /// </summary>
+    /// <param name="consumer">The entity that is consuming our target.</param>
+    /// <param name="target">The poor guy who's getting nibbled on.</param>
+    /// <param name="stomach">The consumer's largest available stomach.</param>
+    private void IngestTargetContents(Entity<ConsumeActionComponent> consumer,
+        Entity<PhysicsComponent?> target,
+        Entity<StomachComponent?> stomach)
+    {
+        if (!Resolve(stomach.Owner, ref stomach.Comp))
+            return;
+
+        // Get the solution to ingest from the target.
+        var consumedSolution = GetConsumedSolution(consumer, target);
+
+        // Spill excess reagents on the floor.
+        TryGetStomachSolution(stomach, out var stomachSol);
+        var stomachVol = stomachSol?.AvailableVolume ?? 0.0f;
+        if (consumedSolution.Volume > stomachVol)
         {
-            var foodReagentQuantity = target.Comp.Mass * consumer.Comp.MeatMultiplier;
-
-            var consumedSolution = _solutionContainer.SplitSolution(targetSolutionComp.Value, targetBloodstream.Volume * consumer.Comp.PortionDrunk);
-
-            if (_rotting.IsRotten(target.Owner))
-            {
-                consumedSolution.AddReagent(consumer.Comp.Toxin, foodReagentQuantity * consumer.Comp.ToxinRatio);
-                foodReagentQuantity *= 1 - consumer.Comp.ToxinRatio; // this math is bad i just know it
-            }
-
-            consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, foodReagentQuantity);
-
-            if (consumedSolution.Volume > consumeEvent.LargestVolume)
-            {
-                var split = consumedSolution.SplitSolution(consumedSolution.Volume - consumeEvent.LargestVolume);
-                _puddle.TrySpillAt(consumer.Owner, split, out _);
-            }
-            _stomach.TryTransferSolution((consumeEvent.LargestStomach.Owner, consumeEvent.LargestStomach.Comp), consumedSolution);
+            var split = consumedSolution.SplitSolution(consumedSolution.Volume - stomachVol);
+            _puddle.TrySpillAt(consumer.Owner, split, out _);
         }
 
-        // Ensure the victim has the consumed component
-        EnsureComp<ConsumedComponent>(target.Owner, out var consumed);
+        // Add the ingested solution to the stomach.
+        _stomach.TryTransferSolution(stomach.AsNullable(), consumedSolution);
+    }
 
-        // Increment the consumed value on the victim.
+    /// <summary>
+    ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
+    ///     from a target's body.
+    /// </summary>
+    /// <param name="consumer">The entity that is consuming our target.</param>
+    /// <param name="target">The poor guy who's getting nibbled on.</param>
+    /// <returns>The solution to ingest on consumption.</returns>
+    private Solution GetConsumedSolution(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent?> target)
+    {
+        // The solution that our consumer is going to ingest.
+        var consumedSolution = new Solution();
+
+        // The quantity of food reagents (e.g. uncooked proteins) we are gonna ingest.
+        var mass = Resolve(target.Owner, ref target.Comp)
+            ? target.Comp.Mass
+            : 0.0f;
+        var ingestedFoodVolume = mass * consumer.Comp.MeatMultiplier;
+
+        // Add toxin to the ingested solution if the target is rotting.
+        if (_rotting.IsRotten(target.Owner))
+        {
+            var toxinVolume = ingestedFoodVolume * consumer.Comp.ToxinRatio;
+            var cleanSolutionRatio = 1 - consumer.Comp.ToxinRatio;
+            ingestedFoodVolume *= cleanSolutionRatio;
+            consumedSolution.AddReagent(consumer.Comp.Toxin, toxinVolume); // yummers
+        }
+
+        // I take a sip
+        if (_solutionContainer.TryGetSolution(target.Owner,
+                consumer.Comp.SolutionToDrinkFrom,
+                out var bloodSolutionComp,
+                out var targetBloodstream))
+        {
+            var ingestedBloodVolume = targetBloodstream.Volume * consumer.Comp.PortionDrunk;
+            var ingestedBlood = _solutionContainer.SplitSolution(bloodSolutionComp.Value, ingestedBloodVolume);
+            consumedSolution.AddSolution(ingestedBlood, ProtoMan);
+        }
+
+        // Finally, food reagents.
+        // We do this at the end because other factors might change this quantity.
+        consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, ingestedFoodVolume);
+
+        return consumedSolution;
+    }
+
+    /// <summary>
+    ///     Inflict a single consumption "bite" on a target, damaging the body.
+    /// </summary>
+    /// <param name="consumer">The entity consuming the target.</param>
+    /// <param name="target">The target being consumed.</param>
+    private void TakeABite(Entity<ConsumeActionComponent> consumer, EntityUid target)
+    {
+        // Increase consumption amount of the victim
+        EnsureComp<ConsumedComponent>(target, out var consumed);
         consumed.ConsumedValue += consumer.Comp.ConsumptionAmount;
-        Dirty(target.Owner, consumed);
+        Dirty(target, consumed);
 
-        var gibThreshold = _configurationManager.GetCVar(MacroCCVars.ConsumptionGibThreshold);
-
-        // And finally, gib the victim if we've hit the threshold! If we don't gib, add whatever we need to the victim.
-        if (gibThreshold != 0 && consumed.ConsumedValue >= gibThreshold)
-            _gibbing.Gib(target.Owner);
-        else
+        // Gib if we exceed the threshold
+        if (_gibThreshold >= 0 && consumed.ConsumedValue >= _gibThreshold)
         {
-            // Transfer DNA
-            _forensics.TransferDna(target.Owner, consumer, false);
-
-            // Deal Damage
-            _damage.TryChangeDamage(target.Owner, consumer.Comp.Damage, true, false);
-
-            // Play eat sound, don't need to play it if they gib because that's already a sound.
-            PlayConsumeSound(consumer);
+            _gibbing.Gib(target);
+            return;
         }
+
+        // I take a bite
+        _forensics.TransferDna(target, consumer, false);
+        _damage.TryChangeDamage(target, consumer.Comp.Damage, true, false);
+        PlayConsumeSound(consumer);
     }
 
     [SubscribeLocalEvent]
     private void OnConsumptionEvent(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeGetLargestStomachEvent> args)
     {
-        if (!_solutionContainer.ResolveSolution(ent.Owner, StomachSystem.DefaultSolutionName, ref ent.Comp.Solution, out var stomachSol))
+        if (!TryGetStomachSolution(ent.AsNullable(), out var stomachSol))
             return;
 
-        if (stomachSol.AvailableVolume <= args.Args.LargestVolume)
-            return;
+        // If this stomach is larger than the previous, then we replace the largest stomach with this one
+        var largest = args.Args.LargestStomach;
+        if (largest != null && TryGetStomachSolution(largest.Value.Owner, out var largestSol)
+            && stomachSol.AvailableVolume > largestSol.AvailableVolume)
+            args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent);
+    }
 
-        args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent, LargestVolume: stomachSol.AvailableVolume);
+    private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
+    {
+        solution = null;
+
+        if (!Resolve(ent.Owner, ref ent.Comp)
+            || _solutionContainer.ResolveSolution(ent.Owner,
+            StomachSystem.DefaultSolutionName,
+            ref ent.Comp.Solution,
+            out solution))
+            return false;
+
+        return solution != null;
     }
 
     /// <summary>
@@ -251,7 +331,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
 /// </summary>
 [ByRefEvent]
 // TODO: ingestion system really needs a refactor huh
-public record struct ConsumeGetLargestStomachEvent(Entity<StomachComponent> LargestStomach, FixedPoint2 LargestVolume);
+public record struct ConsumeGetLargestStomachEvent(Entity<StomachComponent>? LargestStomach);
 
 /// <summary>
 /// Event that is triggered when the entity uses the consume action.
