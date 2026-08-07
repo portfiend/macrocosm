@@ -10,7 +10,6 @@ using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
-using Content.Shared.FixedPoint;
 using Content.Shared.Fluids;
 using Content.Shared.Forensics.Systems;
 using Content.Shared.Gibbing;
@@ -79,64 +78,46 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     [SubscribeLocalEvent]
     private void OnConsumeAction(Entity<ConsumeActionComponent> ent, ref ConsumeEvent args)
     {
-        // Check if we have a mouth.
-        if (!_ingestion.HasMouthAvailable(args.Performer, args.Performer))
+        var target = args.Target;
+        var targetName = Identity.Entity(target, EntityManager);
+
+        // Ensure the consumer has a mouth.
+        if (!_ingestion.HasMouthAvailable(ent.Owner, ent.Owner))
         {
-            _popup.PopupClient(Loc.GetString(ent.Comp.ConsumeFailByBlock), ent, ent);
+            var popupText = Loc.GetString(ent.Comp.ConsumeFailByBlock);
+            _popup.PopupEntity(popupText, ent, ent);
             return;
         }
 
-        // Check if the target passes the whitelist and blacklist.
-        if (!_whitelist.CheckBoth(args.Target, ent.Comp.Blacklist, ent.Comp.Whitelist))
+        // Ensure the target passes the whitelist and blacklist.
+        if (!_whitelist.CheckBoth(target, ent.Comp.Blacklist, ent.Comp.Whitelist))
         {
-            _popup.PopupEntity(Loc.GetString(ent.Comp.ConsumeFailByInedible, ("target", Identity.Entity(args.Target, EntityManager))), ent, ent);
+            var popupText = Loc.GetString(ent.Comp.ConsumeFailByInedible, ("target", targetName));
+            _popup.PopupEntity(popupText, ent, ent);
             return;
         }
 
-        // Check if the entity is or is not incapacitated.
-        if (!_mobState.IsIncapacitated(args.Target))
+        // Ensure the target is incapacitated.
+        if (!_mobState.IsIncapacitated(target))
         {
-            _popup.PopupEntity(Loc.GetString(ent.Comp.ConsumeFailByIncapacitated, ("target", Identity.Entity(args.Target, EntityManager))), ent, ent);
+            var popupText = Loc.GetString(ent.Comp.ConsumeFailByIncapacitated, ("target", targetName));
+            _popup.PopupEntity(popupText, ent, ent);
             return;
         }
 
-        if (!TryComp<PhysicsComponent>(args.Target, out var targetPhysics))
-            return;
-
-        if (!TryComp<PhysicsComponent>(args.Performer, out var performerPhysics))
-            return;
-
-        // Setup the doafter.
+        // Begin our attempt to consume the target
+        var consumeTime = GetConsumeTime(ent, target);
+        var ev = new ConsumeDoAfterEvent();
         var doargs = new DoAfterArgs(EntityManager,
-            ent,
-            targetPhysics.Mass / performerPhysics.Mass * ent.Comp.BaseConsumeSpeed,
-            new ConsumeDoAfterEvent(),
-            ent,
-            args.Target);
-
-        // Do the popup for ourselves.
-        if (ent.Comp.PopupSelfStart != null)
-        {
-            var popupSelf = Loc.GetString(ent.Comp.PopupSelfStart,
-                ("user", Identity.Entity(ent, EntityManager)),
-                ("target", Identity.Entity(args.Target, EntityManager)));
-            _popup.PopupEntity(popupSelf, ent, ent);
-        }
-
-        // Do the popup for others.
-        if (ent.Comp.PopupOthersStart != null)
-        {
-            var popupOthers = Loc.GetString(ent.Comp.PopupOthersStart,
-                ("user", Identity.Entity(ent, EntityManager)),
-                ("target", Identity.Entity(args.Target, EntityManager)));
-            _popup.PopupEntity(popupOthers, ent, Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent), true, PopupType.MediumCaution);
-        }
+            user: ent,
+            seconds: consumeTime,
+            @event: ev,
+            eventTarget: ent,
+            target: target);
 
         _doAfter.TryStartDoAfter(doargs);
-
-        // Play our sound
+        DoConsumeStartPopup(ent, target);
         PlayConsumeSound(ent);
-
         args.Handled = true;
     }
 
@@ -173,6 +154,110 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         if (largest != null && TryGetStomachSolution(largest.Value.Owner, out var largestSol)
             && stomachSol.AvailableVolume > largestSol.AvailableVolume)
             args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent);
+    }
+
+    /// <summary>
+    ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
+    ///     from a target's body.
+    /// </summary>
+    /// <param name="consumer">The entity that is consuming our target.</param>
+    /// <param name="target">The poor guy who's getting nibbled on.</param>
+    /// <returns>The solution to ingest on consumption.</returns>
+    private Solution GetConsumedSolution(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent?> target)
+    {
+        // The solution that our consumer is going to ingest.
+        var consumedSolution = new Solution();
+
+        // The quantity of food reagents (e.g. uncooked proteins) we are gonna ingest.
+        var mass = Resolve(target.Owner, ref target.Comp)
+            ? target.Comp.Mass
+            : 0.0f;
+        var ingestedFoodVolume = mass * consumer.Comp.MeatMultiplier;
+
+        // Add toxin to the ingested solution if the target is rotting.
+        if (_rotting.IsRotten(target.Owner))
+        {
+            var toxinVolume = ingestedFoodVolume * consumer.Comp.ToxinRatio;
+            var cleanSolutionRatio = 1 - consumer.Comp.ToxinRatio;
+            ingestedFoodVolume *= cleanSolutionRatio;
+            consumedSolution.AddReagent(consumer.Comp.Toxin, toxinVolume); // yummers
+        }
+
+        // I take a sip
+        if (_solutionContainer.TryGetSolution(target.Owner,
+                consumer.Comp.SolutionToDrinkFrom,
+                out var bloodSolutionComp,
+                out var targetBloodstream))
+        {
+            var ingestedBloodVolume = targetBloodstream.Volume * consumer.Comp.PortionDrunk;
+            var ingestedBlood = _solutionContainer.SplitSolution(bloodSolutionComp.Value, ingestedBloodVolume);
+            consumedSolution.AddSolution(ingestedBlood, ProtoMan);
+        }
+
+        // Finally, food reagents.
+        // We do this at the end because other factors might change this quantity.
+        consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, ingestedFoodVolume);
+
+        return consumedSolution;
+    }
+
+    private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
+    {
+        solution = null;
+
+        if (!Resolve(ent.Owner, ref ent.Comp)
+            || _solutionContainer.ResolveSolution(ent.Owner,
+            StomachSystem.DefaultSolutionName,
+            ref ent.Comp.Solution,
+            out solution))
+            return false;
+
+        return solution != null;
+    }
+
+    /// <summary>
+    ///     Get the duration in seconds it'll take to consume a target.
+    /// </summary>
+    /// <param name="ent">The entity that is consuming the target.</param>
+    /// <param name="target">The target of consumption.</param>
+    /// <returns>duration in seconds that it will take for a consumer to ingest the target</returns>
+    private float GetConsumeTime(Entity<ConsumeActionComponent> ent, EntityUid target)
+    {
+        if (!TryComp<PhysicsComponent>(target, out var targetPhysics)
+            || !TryComp<PhysicsComponent>(ent.Owner, out var consumerPhysics))
+            return ent.Comp.BaseConsumeSpeed;
+
+        return targetPhysics.Mass / consumerPhysics.Mass * ent.Comp.BaseConsumeSpeed;
+    }
+
+    /// <summary>
+    ///     Show popups for a consumer attempting to bite a target.
+    /// </summary>
+    /// <param name="ent">The entity that is consuming the target.</param>
+    /// <param name="target">The target of consumption.</param>
+    private void DoConsumeStartPopup(Entity<ConsumeActionComponent> ent, EntityUid target)
+    {
+        var consumerName = Identity.Entity(ent, EntityManager);
+        var targetName = Identity.Entity(target, EntityManager);
+
+        // Do the popup for ourselves.
+        if (ent.Comp.PopupSelfStart != null)
+        {
+            var popupSelf = Loc.GetString(ent.Comp.PopupSelfStart,
+                ("user", consumerName),
+                ("target", targetName));
+            _popup.PopupEntity(popupSelf, ent, ent);
+        }
+
+        // Do the popup for others.
+        if (ent.Comp.PopupOthersStart != null)
+        {
+            var allButSelf = Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent);
+            var popupOthers = Loc.GetString(ent.Comp.PopupOthersStart,
+                ("user", consumerName),
+                ("target", targetName));
+            _popup.PopupEntity(popupOthers, ent, allButSelf, true, PopupType.MediumCaution);
+        }
     }
 
     /// <summary>
@@ -250,51 +335,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     }
 
     /// <summary>
-    ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
-    ///     from a target's body.
-    /// </summary>
-    /// <param name="consumer">The entity that is consuming our target.</param>
-    /// <param name="target">The poor guy who's getting nibbled on.</param>
-    /// <returns>The solution to ingest on consumption.</returns>
-    private Solution GetConsumedSolution(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent?> target)
-    {
-        // The solution that our consumer is going to ingest.
-        var consumedSolution = new Solution();
-
-        // The quantity of food reagents (e.g. uncooked proteins) we are gonna ingest.
-        var mass = Resolve(target.Owner, ref target.Comp)
-            ? target.Comp.Mass
-            : 0.0f;
-        var ingestedFoodVolume = mass * consumer.Comp.MeatMultiplier;
-
-        // Add toxin to the ingested solution if the target is rotting.
-        if (_rotting.IsRotten(target.Owner))
-        {
-            var toxinVolume = ingestedFoodVolume * consumer.Comp.ToxinRatio;
-            var cleanSolutionRatio = 1 - consumer.Comp.ToxinRatio;
-            ingestedFoodVolume *= cleanSolutionRatio;
-            consumedSolution.AddReagent(consumer.Comp.Toxin, toxinVolume); // yummers
-        }
-
-        // I take a sip
-        if (_solutionContainer.TryGetSolution(target.Owner,
-                consumer.Comp.SolutionToDrinkFrom,
-                out var bloodSolutionComp,
-                out var targetBloodstream))
-        {
-            var ingestedBloodVolume = targetBloodstream.Volume * consumer.Comp.PortionDrunk;
-            var ingestedBlood = _solutionContainer.SplitSolution(bloodSolutionComp.Value, ingestedBloodVolume);
-            consumedSolution.AddSolution(ingestedBlood, ProtoMan);
-        }
-
-        // Finally, food reagents.
-        // We do this at the end because other factors might change this quantity.
-        consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, ingestedFoodVolume);
-
-        return consumedSolution;
-    }
-
-    /// <summary>
     ///     Inflict a single consumption "bite" on a target, damaging the body.
     /// </summary>
     /// <param name="consumer">The entity consuming the target.</param>
@@ -317,20 +357,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         _forensics.TransferDna(target, consumer, false);
         _damage.TryChangeDamage(target, consumer.Comp.Damage, true, false);
         PlayConsumeSound(consumer);
-    }
-
-    private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
-    {
-        solution = null;
-
-        if (!Resolve(ent.Owner, ref ent.Comp)
-            || _solutionContainer.ResolveSolution(ent.Owner,
-            StomachSystem.DefaultSolutionName,
-            ref ent.Comp.Solution,
-            out solution))
-            return false;
-
-        return solution != null;
     }
 
     /// <summary>
