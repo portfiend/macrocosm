@@ -389,7 +389,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// <param name="ent">Entity to get the sound from and to play on.</param>
     private void PlayConsumeSound(Entity<ConsumeActionComponent> ent)
     {
-        _audio.PlayPvs(ent.Comp.ConsumptionSound, ent);
+        _audio.PlayPredicted(ent.Comp.ConsumptionSound, ent, ent);
     }
 }
 
