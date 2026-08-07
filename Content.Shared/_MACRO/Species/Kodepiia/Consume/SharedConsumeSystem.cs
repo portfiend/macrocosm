@@ -27,7 +27,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._MACRO.Species.Kodepiia.Consume;
 
 /// <summary>
-///     System that handles entities that consume other entities.. It's entity cannibalism.
+///     System that handles entities that consume other entities... It's entity cannibalism.
 /// </summary>
 public abstract partial class SharedConsumeSystem : EntitySystem
 {
@@ -370,19 +370,19 @@ public abstract partial class SharedConsumeSystem : EntitySystem
 }
 
 /// <summary>
-/// Raised when an entity consumes another entity.
+///     Raised to get the consumer's largest stomach by available volume.
 /// </summary>
 [ByRefEvent]
 // TODO: ingestion system really needs a refactor huh
 public record struct ConsumeGetLargestStomachEvent(Entity<StomachComponent>? LargestStomach);
 
 /// <summary>
-/// Event that is triggered when the entity uses the consume action.
+///     Raised when the consumer targets an entity for consumption.
 /// </summary>
 public sealed partial class ConsumeEvent : EntityTargetActionEvent;
 
 /// <summary>
-/// This is a consume doafter event! It is a simple doafter event!
+///     Raised when a consumer successfully attempts to consume a target.
 /// </summary>
 [Serializable, NetSerializable]
 public sealed partial class ConsumeDoAfterEvent : SimpleDoAfterEvent;
