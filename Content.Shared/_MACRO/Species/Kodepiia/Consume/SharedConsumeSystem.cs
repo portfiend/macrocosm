@@ -152,27 +152,44 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         // All stomachs are full or we have no stomachs
         if (ev.LargestStomach == null)
         {
-            _popup.PopupClient(Loc.GetString(ent.Comp.ConsumeFailByFullStomach, ("verb", "eat")), ent, ent);
+            var verb = Loc.GetString(ent.Comp.ConsumeVerb);
+            var popupText = Loc.GetString(ent.Comp.ConsumeFailByFullStomach, ("verb", verb));
+            _popup.PopupEntity(popupText, ent, ent);
             return;
         }
+
+        Consume(ent, (args.Target.Value, targetPhysics), ev.LargestStomach.Value.AsNullable());
+        DoConsumeSuccessPopup(ent, args.Target.Value);
+    }
+
+    /// <summary>
+    ///     Show popups for a successful "consume" operation.
+    /// </summary>
+    /// <param name="ent">The entity that is consuming the target.</param>
+    /// <param name="target">The target of consumption.</param>
+    private void DoConsumeSuccessPopup(Entity<ConsumeActionComponent> ent, EntityUid target)
+    {
+        var consumerName = Identity.Entity(ent, EntityManager);
+        var targetName = Identity.Entity(target, EntityManager);
 
         if (ent.Comp.PopupSelfEnd != null)
         {
             var popupSelf = Loc.GetString(ent.Comp.PopupSelfEnd,
-                ("user", Identity.Entity(ent, EntityManager)),
-                ("target", Identity.Entity(args.Target.Value, EntityManager)));
+                ("user", consumerName),
+                ("target", targetName));
+
             _popup.PopupEntity(popupSelf, ent, ent);
         }
 
         if (ent.Comp.PopupOthersEnd != null)
         {
+            var allButSelf = Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent);
             var popupOthers = Loc.GetString(ent.Comp.PopupOthersEnd,
-                ("user", Identity.Entity(ent, EntityManager)),
-                ("target", Identity.Entity(args.Target.Value, EntityManager)));
-            _popup.PopupEntity(popupOthers, ent, Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent), true, PopupType.MediumCaution);
-        }
+                ("user", consumerName),
+                ("target", targetName));
 
-        Consume(ent, (args.Target.Value, targetPhysics), ev.LargestStomach.Value.AsNullable());
+            _popup.PopupEntity(popupOthers, ent, allButSelf, true, PopupType.MediumCaution);
+        }
     }
 
     /// <summary>

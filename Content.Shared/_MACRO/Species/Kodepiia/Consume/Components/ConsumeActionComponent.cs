@@ -121,6 +121,12 @@ public sealed partial class ConsumeActionComponent : Component
     public LocId ConsumeFailByFullStomach = "ingestion-you-cannot-ingest-any-more";
 
     /// <summary>
+    /// The verb used for consuming a target. E.g.: "You cannot [verb] this target!"
+    /// </summary>
+    [DataField]
+    public LocId ConsumeVerb = "edible-verb-food";
+
+    /// <summary>
     /// LocId of the popup that only shows up to the consumer when they consume something.
     /// </summary>
     [DataField]
