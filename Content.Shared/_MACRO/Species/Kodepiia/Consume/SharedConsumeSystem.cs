@@ -53,7 +53,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<BodyComponent, ConsumeActionEvent>(_body.RelayEvent);
+        SubscribeLocalEvent<BodyComponent, ConsumeGetLargestStomachEvent>(_body.RelayEvent);
     }
 
     [SubscribeLocalEvent]
@@ -138,7 +138,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         if (args.Target == null || args.Cancelled || !TryComp<PhysicsComponent>(args.Target, out var targetPhysics))
             return;
 
-        var ev = new ConsumeActionEvent();
+        var ev = new ConsumeGetLargestStomachEvent();
         RaiseLocalEvent(ent, ref ev);
 
         // All stomachs are full or we have no stomachs
@@ -173,7 +173,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// <param name="consumer">Entity that consumes.</param>
     /// <param name="target">Entity that IS consumed.</param>
     /// <param name="consumeEvent">The event that lead this consumption.</param>
-    private void Consume(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent> target, ConsumeActionEvent consumeEvent)
+    private void Consume(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent> target, ConsumeGetLargestStomachEvent consumeEvent)
     {
         // Drink Bloodstream
         _solutionContainer.TryGetSolution(target.Owner, consumer.Comp.SolutionToDrinkFrom, out var targetSolutionComp, out var targetBloodstream);
@@ -225,7 +225,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     }
 
     [SubscribeLocalEvent]
-    private void OnConsumptionEvent(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeActionEvent> args)
+    private void OnConsumptionEvent(Entity<StomachComponent> ent, ref BodyRelayedEvent<ConsumeGetLargestStomachEvent> args)
     {
         if (!_solutionContainer.ResolveSolution(ent.Owner, StomachSystem.DefaultSolutionName, ref ent.Comp.Solution, out var stomachSol))
             return;
@@ -233,7 +233,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         if (stomachSol.AvailableVolume <= args.Args.LargestVolume)
             return;
 
-        args.Args = new ConsumeActionEvent(LargestStomach: ent, LargestVolume: stomachSol.AvailableVolume);
+        args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent, LargestVolume: stomachSol.AvailableVolume);
     }
 
     /// <summary>
@@ -250,7 +250,8 @@ public abstract partial class SharedConsumeSystem : EntitySystem
 /// Raised when an entity consumes another entity.
 /// </summary>
 [ByRefEvent]
-public record struct ConsumeActionEvent(Entity<StomachComponent> LargestStomach, FixedPoint2 LargestVolume);
+// TODO: ingestion system really needs a refactor huh
+public record struct ConsumeGetLargestStomachEvent(Entity<StomachComponent> LargestStomach, FixedPoint2 LargestVolume);
 
 /// <summary>
 /// Event that is triggered when the entity uses the consume action.
