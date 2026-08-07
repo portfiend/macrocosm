@@ -981,7 +981,7 @@
   - EmergencyNitrogenExtended
   - EmergencyOxygenExtended
   - LoadoutSpeciesVoxNitrogen
-  - EmergencyMeatSecurity # MACRO: Kodepiia
+  - EmergencyMeatExtended # MACRO: Kodepiia
   - EmergencyAquaticExtended # MACRO: Decapoids
   - LoadoutSpeciesAquaticFullTank # MACRO: Decapoids
   - EmergencyWheatExtended # MACRO: Ungu
@@ -1322,6 +1322,7 @@
   - EmergencyAquaticSecurity # MACRO: Decapoids
   - LoadoutSpeciesAquaticFullTank # MACRO: Decapoids
   - EmergencyWheatSecurity # MACRO: Ungu
+  - EmergencyMeatSecurity # MACRO: Kodepiia
 
 # Wildcards
 - type: loadoutGroup
