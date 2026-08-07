@@ -193,36 +193,52 @@ marking-KodeSockRFoot-sock = Socks (R Foot)
 # Hair
 
 marking-KodaBob1 = Bob
+marking-KodaBob1-bob4 = Bob
 
 marking-KodaBob2 = Bob With Bangs
+marking-KodaBob2-bob5 = Bob With Bangs
 
 marking-KodaCIA = CIA
+marking-KodaCIA-cia = CIA
 
 marking-KodaCornrows = Cornrows
+marking-KodaCornrows-cornrowbraid = Cornrows
 
 marking-KodaCurls = Curls
+marking-KodaCurls-curls = Curls
 
 marking-KodaDandy = Pompadour
+marking-KodaDandy-dandypompadour = Pompadour
 
 marking-KodaDoubleBun = Double Bun With Eyes
+marking-KodaDoubleBun-doublebun = Double Bun With Eyes
 
 marking-KodaDoubleBunNormal = Double Bun
+marking-KodaDoubleBunNormal-doublebunnoeyes = Double Bun
 
 marking-KodaEmo = Emo
+marking-KodaEmo-emo2 = Emo
 
 marking-KodaHalfShaved = Half Shaved
+marking-KodaHalfShaved-halfshaved = Half Shaved
 
 marking-KodaHime = Hime
+marking-KodaHime-himecut2 = Hime
 
 marking-KodaMessy = Messy
+marking-KodaMessy-messy = Messy
 
 marking-KodaPonytail = Ponytail
+marking-KodaPonytail-ponytail3 = Ponytail
 
 marking-KodaSpiky = Spiky
+marking-KodaSpiky-spiky = Spiky
 
 marking-KodaShort = Short
+marking-KodaShort-veryshortovereyealternate = Short
 
 marking-KodaLong = Long
+marking-KodaLong-vlongfringe = Long
 
 # HeadSide
 
