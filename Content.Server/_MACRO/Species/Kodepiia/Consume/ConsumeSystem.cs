@@ -151,7 +151,7 @@ public sealed partial class ConsumeSystem : SharedConsumeSystem
             _popup.PopupEntity(popupOthers, ent, Filter.Pvs(ent).RemovePlayersByAttachedEntity(ent), true, PopupType.MediumCaution);
         }
 
-        Consume(ent, (args.Target.Value,targetPhysics), ev);
+        Consume(ent, (args.Target.Value, targetPhysics), ev);
     }
 
     /// <summary>
