@@ -147,8 +147,9 @@
     breathVolume: 1 # Twice as much - makes kodes sensitive to waste gases
     updateIntervalMultiplier: 0.5 # Twice as fast
     gaspEmoteCooldown: 4 # Twice as frequent
+
 - type: entity
-  parent: OrganBase
+  parent: OrganBaseOrganic
   id: OrganKodepiia
   abstract: true
   suffix: Kodepiia
