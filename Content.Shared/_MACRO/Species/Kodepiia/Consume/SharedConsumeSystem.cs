@@ -1,4 +1,4 @@
-using Content.Shared._MACRO.Species.Kodepiia.Components;
+using Content.Shared._MACRO.Species.Kodepiia.Consume.Components;
 using Content.Shared.Actions;
 using Content.Shared.DoAfter;
 using Robust.Shared.Serialization;
@@ -15,16 +15,16 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<Components.ConsumeActionComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<Components.ConsumeActionComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<ConsumeActionComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<ConsumeActionComponent, ComponentShutdown>(OnShutdown);
     }
 
-    private void OnShutdown(Entity<Components.ConsumeActionComponent> ent, ref ComponentShutdown args)
+    private void OnShutdown(Entity<ConsumeActionComponent> ent, ref ComponentShutdown args)
     {
         _actionsSystem.RemoveAction(ent.Owner, ent.Comp.ConsumeAction);
     }
 
-    private void OnStartup(Entity<Components.ConsumeActionComponent> ent, ref ComponentStartup args)
+    private void OnStartup(Entity<ConsumeActionComponent> ent, ref ComponentStartup args)
     {
         _actionsSystem.AddAction(ent, ref ent.Comp.ConsumeAction, ent.Comp.ConsumeActionId);
     }
