@@ -91,7 +91,10 @@ public sealed partial class ConsumeActionComponent : Component
     /// Sound that is played when the the victim is consumed.
     /// </summary>
     [DataField]
-    public SoundSpecifier ConsumptionSound = new SoundCollectionSpecifier("gib");
+    public SoundSpecifier ConsumptionSound = new SoundCollectionSpecifier("gib")
+    {
+        Params = AudioParams.Default.WithVolume(-3f),
+    };
 
     /// <summary>
     /// LocId of the failure popup that occurs when consuming is blocked.

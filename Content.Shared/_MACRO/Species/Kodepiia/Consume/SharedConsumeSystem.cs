@@ -127,7 +127,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         _doAfter.TryStartDoAfter(doargs);
 
         // Play our sound
-        PlaySound(ent);
+        PlayConsumeSound(ent);
 
         args.Handled = true;
     }
@@ -220,7 +220,7 @@ public abstract partial class SharedConsumeSystem : EntitySystem
             _damage.TryChangeDamage(target.Owner, consumer.Comp.Damage, true, false);
 
             // Play eat sound, don't need to play it if they gib because that's already a sound.
-            PlaySound(consumer);
+            PlayConsumeSound(consumer);
         }
     }
 
@@ -240,9 +240,9 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// Play the consume sound defined by an entity.
     /// </summary>
     /// <param name="ent">Entity to get the sound from and to play on.</param>
-    private void PlaySound(Entity<ConsumeActionComponent> ent)
+    private void PlayConsumeSound(Entity<ConsumeActionComponent> ent)
     {
-        _audio.PlayPvs(ent.Comp.ConsumptionSound, ent, AudioParams.Default.WithVolume(-3f));
+        _audio.PlayPvs(ent.Comp.ConsumptionSound, ent);
     }
 }
 
