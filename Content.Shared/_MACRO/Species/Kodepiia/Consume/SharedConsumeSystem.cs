@@ -244,14 +244,20 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     /// </summary>
     /// <param name="ent">The entity that is consuming the target.</param>
     /// <param name="target">The target of consumption.</param>
-    /// <returns>duration in seconds that it will take for a consumer to ingest the target</returns>
+    /// <returns>duration in seconds that it will take for a consumer to consume the target.</returns>
     private float GetConsumeTime(Entity<ConsumeActionComponent> ent, EntityUid target)
     {
-        if (!TryComp<PhysicsComponent>(target, out var targetPhysics)
-            || !TryComp<PhysicsComponent>(ent.Owner, out var consumerPhysics))
-            return ent.Comp.BaseConsumeSpeed;
+        var consumeTime = ent.Comp.BaseConsumeTime;
 
-        return targetPhysics.Mass / consumerPhysics.Mass * ent.Comp.BaseConsumeSpeed;
+        // Multiply by mass ratio, if applicable
+        if (TryComp<PhysicsComponent>(target, out var targetPhysics)
+            && TryComp<PhysicsComponent>(ent.Owner, out var consumerPhysics))
+        {
+            var massRatio = targetPhysics.Mass / consumerPhysics.Mass;
+            consumeTime *= massRatio;
+        }
+
+        return (float)consumeTime.TotalSeconds;
     }
 
     /// <summary>

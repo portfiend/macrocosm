@@ -39,10 +39,14 @@ public sealed partial class ConsumeActionComponent : Component
     public bool CanEatRotten = true;
 
     /// <summary>
-    /// Base consume speed. The quotient of the target and performers body mass is multiplied by this.
+    ///     The base time of the doAfter for consuming a mob.
     /// </summary>
+    /// <remarks>
+    ///     This is multiplied by the ratio of the target's mass to the consumer's mass;
+    ///     for instance, a consumer will bite smaller mobs faster, and vice versa.
+    /// </remarks>
     [DataField]
-    public float BaseConsumeSpeed = 10f;
+    public TimeSpan BaseConsumeTime = TimeSpan.FromSeconds(10.0f);
 
     /// <summary>
     /// reagent ingested when eating.
