@@ -181,27 +181,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     }
 
     /// <summary>
-    ///     Get the duration in seconds it'll take to consume a target.
-    /// </summary>
-    /// <param name="ent">The entity that is consuming the target.</param>
-    /// <param name="target">The target of consumption.</param>
-    /// <returns>duration in seconds that it will take for a consumer to consume the target.</returns>
-    private float GetConsumeTime(Entity<ConsumeActionComponent> ent, EntityUid target)
-    {
-        var consumeTime = ent.Comp.BaseConsumeTime;
-
-        // Multiply by mass ratio, if applicable
-        if (TryComp<PhysicsComponent>(target, out var targetPhysics)
-            && TryComp<PhysicsComponent>(ent.Owner, out var consumerPhysics))
-        {
-            var massRatio = targetPhysics.Mass / consumerPhysics.Mass;
-            consumeTime *= massRatio;
-        }
-
-        return (float)consumeTime.TotalSeconds;
-    }
-
-    /// <summary>
     ///     Show popups for a consumer attempting to bite a target.
     /// </summary>
     /// <param name="ent">The entity that is consuming the target.</param>
@@ -331,6 +310,36 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     }
 
     /// <summary>
+    /// Play the consume sound defined by an entity.
+    /// </summary>
+    /// <param name="ent">Entity to get the sound from and to play on.</param>
+    private void PlayConsumeSound(Entity<ConsumeActionComponent> ent)
+    {
+        _audio.PlayPredicted(ent.Comp.ConsumptionSound, ent, ent);
+    }
+
+    /// <summary>
+    ///     Get the duration in seconds it'll take to consume a target.
+    /// </summary>
+    /// <param name="ent">The entity that is consuming the target.</param>
+    /// <param name="target">The target of consumption.</param>
+    /// <returns>duration in seconds that it will take for a consumer to consume the target.</returns>
+    private float GetConsumeTime(Entity<ConsumeActionComponent> ent, EntityUid target)
+    {
+        var consumeTime = ent.Comp.BaseConsumeTime;
+
+        // Multiply by mass ratio, if applicable
+        if (TryComp<PhysicsComponent>(target, out var targetPhysics)
+            && TryComp<PhysicsComponent>(ent.Owner, out var consumerPhysics))
+        {
+            var massRatio = targetPhysics.Mass / consumerPhysics.Mass;
+            consumeTime *= massRatio;
+        }
+
+        return (float)consumeTime.TotalSeconds;
+    }
+
+    /// <summary>
     ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
     ///     from a target's body.
     /// </summary>
@@ -387,15 +396,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
             return false;
 
         return solution != null;
-    }
-
-    /// <summary>
-    /// Play the consume sound defined by an entity.
-    /// </summary>
-    /// <param name="ent">Entity to get the sound from and to play on.</param>
-    private void PlayConsumeSound(Entity<ConsumeActionComponent> ent)
-    {
-        _audio.PlayPredicted(ent.Comp.ConsumptionSound, ent, ent);
     }
 }
 
