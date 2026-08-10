@@ -2,6 +2,7 @@ using Content.Shared.Examine;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs;
 using Content.Shared._MACRO.Species.Kodepiia.Consume.Components;
+using System.Linq;
 
 namespace Content.Shared._MACRO.Species.Kodepiia.Consume;
 
@@ -20,27 +21,17 @@ public sealed partial class ConsumedSystem : EntitySystem
 
     private void OnExamine(Entity<ConsumedComponent> ent, ref ExaminedEvent args)
     {
-        var consumeIndex = 0;
-        //This is basically just how consumed the entity is, with a range of 1 to 4
-        switch (ent.Comp.ConsumedValue)
-        {
-            case <= 1:
-                consumeIndex = 1;
-                break;
-            case <= 3:
-                consumeIndex = 2;
-                break;
-            case <= 4:
-                consumeIndex = 3;
-                break;
-            case <= 8:
-                consumeIndex = 4;
-                break;
-        }
+        var consumed = ent.Comp.ConsumedValue;
+        var target = Identity.Entity(ent, EntityManager);
 
-        args.PushMarkup(Loc.GetString($"consumed-onexamine-{consumeIndex}",
-            ("target", Identity.Entity(ent, EntityManager))));
+        // Filter thresholds by whatever equals or exceeds consume value.
+        var validthresholds = ent.Comp.ExamineThresholds.Where(kvp => consumed >= kvp.Key);
+        if (!validthresholds.Any())
+            return;
 
+        // Get the highest valid tooltip and use it as examine text.
+        var examineTooltip = validthresholds.MaxBy(kvp => kvp.Key).Value;
+        args.PushMarkup(Loc.GetString(examineTooltip, ("target", target)));
     }
 
     private void OnMobStateChange(Entity<ConsumedComponent> ent, ref MobStateChangedEvent args)
