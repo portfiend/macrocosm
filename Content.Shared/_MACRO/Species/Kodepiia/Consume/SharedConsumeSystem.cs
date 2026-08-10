@@ -175,8 +175,9 @@ public abstract partial class SharedConsumeSystem : EntitySystem
 
         // If this stomach is larger than the previous, then we replace the largest stomach with this one
         var largest = args.Args.LargestStomach;
-        if (largest != null && TryGetStomachSolution(largest.Value.Owner, out var largestSol)
-            && stomachSol.AvailableVolume > largestSol.AvailableVolume)
+        if (largest == null
+            || (TryGetStomachSolution(largest.Value.Owner, out var largestSol)
+                && stomachSol.AvailableVolume > largestSol.AvailableVolume))
             args.Args = new ConsumeGetLargestStomachEvent(LargestStomach: ent);
     }
 
