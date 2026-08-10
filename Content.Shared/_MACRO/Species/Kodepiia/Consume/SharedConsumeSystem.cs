@@ -181,65 +181,6 @@ public abstract partial class SharedConsumeSystem : EntitySystem
     }
 
     /// <summary>
-    ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
-    ///     from a target's body.
-    /// </summary>
-    /// <param name="consumer">The entity that is consuming our target.</param>
-    /// <param name="target">The poor guy who's getting nibbled on.</param>
-    /// <returns>The solution to ingest on consumption.</returns>
-    private Solution GetConsumedSolution(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent?> target)
-    {
-        // The solution that our consumer is going to ingest.
-        var consumedSolution = new Solution();
-
-        // The quantity of food reagents (e.g. uncooked proteins) we are gonna ingest.
-        var mass = Resolve(target.Owner, ref target.Comp)
-            ? target.Comp.Mass
-            : 0.0f;
-        var ingestedFoodVolume = mass * consumer.Comp.MeatMultiplier;
-
-        // Add toxin to the ingested solution if the target is rotting.
-        if (_rotting.IsRotten(target.Owner))
-        {
-            var toxinVolume = ingestedFoodVolume * consumer.Comp.ToxinRatio;
-            var cleanSolutionRatio = 1 - consumer.Comp.ToxinRatio;
-            ingestedFoodVolume *= cleanSolutionRatio;
-            consumedSolution.AddReagent(consumer.Comp.Toxin, toxinVolume); // yummers
-        }
-
-        // I take a sip
-        if (_solutionContainer.TryGetSolution(target.Owner,
-                consumer.Comp.SolutionToDrinkFrom,
-                out var bloodSolutionComp,
-                out var targetBloodstream))
-        {
-            var ingestedBloodVolume = targetBloodstream.Volume * consumer.Comp.PortionDrunk;
-            var ingestedBlood = _solutionContainer.SplitSolution(bloodSolutionComp.Value, ingestedBloodVolume);
-            consumedSolution.AddSolution(ingestedBlood, ProtoMan);
-        }
-
-        // Finally, food reagents.
-        // We do this at the end because other factors might change this quantity.
-        consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, ingestedFoodVolume);
-
-        return consumedSolution;
-    }
-
-    private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
-    {
-        solution = null;
-
-        if (!Resolve(ent.Owner, ref ent.Comp)
-            || _solutionContainer.ResolveSolution(ent.Owner,
-            StomachSystem.DefaultSolutionName,
-            ref ent.Comp.Solution,
-            out solution))
-            return false;
-
-        return solution != null;
-    }
-
-    /// <summary>
     ///     Get the duration in seconds it'll take to consume a target.
     /// </summary>
     /// <param name="ent">The entity that is consuming the target.</param>
@@ -387,6 +328,65 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         _forensics.TransferDna(target, consumer, false);
         _damage.TryChangeDamage(target, consumer.Comp.Damage, true, false);
         PlayConsumeSound(consumer);
+    }
+
+    /// <summary>
+    ///     Construct a portion of blood, food reagents, and potential toxins for our consumer to ingest
+    ///     from a target's body.
+    /// </summary>
+    /// <param name="consumer">The entity that is consuming our target.</param>
+    /// <param name="target">The poor guy who's getting nibbled on.</param>
+    /// <returns>The solution to ingest on consumption.</returns>
+    private Solution GetConsumedSolution(Entity<ConsumeActionComponent> consumer, Entity<PhysicsComponent?> target)
+    {
+        // The solution that our consumer is going to ingest.
+        var consumedSolution = new Solution();
+
+        // The quantity of food reagents (e.g. uncooked proteins) we are gonna ingest.
+        var mass = Resolve(target.Owner, ref target.Comp)
+            ? target.Comp.Mass
+            : 0.0f;
+        var ingestedFoodVolume = mass * consumer.Comp.MeatMultiplier;
+
+        // Add toxin to the ingested solution if the target is rotting.
+        if (_rotting.IsRotten(target.Owner))
+        {
+            var toxinVolume = ingestedFoodVolume * consumer.Comp.ToxinRatio;
+            var cleanSolutionRatio = 1 - consumer.Comp.ToxinRatio;
+            ingestedFoodVolume *= cleanSolutionRatio;
+            consumedSolution.AddReagent(consumer.Comp.Toxin, toxinVolume); // yummers
+        }
+
+        // I take a sip
+        if (_solutionContainer.TryGetSolution(target.Owner,
+                consumer.Comp.SolutionToDrinkFrom,
+                out var bloodSolutionComp,
+                out var targetBloodstream))
+        {
+            var ingestedBloodVolume = targetBloodstream.Volume * consumer.Comp.PortionDrunk;
+            var ingestedBlood = _solutionContainer.SplitSolution(bloodSolutionComp.Value, ingestedBloodVolume);
+            consumedSolution.AddSolution(ingestedBlood, ProtoMan);
+        }
+
+        // Finally, food reagents.
+        // We do this at the end because other factors might change this quantity.
+        consumedSolution.AddReagent(consumer.Comp.FoodReagentPrototype, ingestedFoodVolume);
+
+        return consumedSolution;
+    }
+
+    private bool TryGetStomachSolution(Entity<StomachComponent?> ent, [NotNullWhen(true)] out Solution? solution)
+    {
+        solution = null;
+
+        if (!Resolve(ent.Owner, ref ent.Comp)
+            || _solutionContainer.ResolveSolution(ent.Owner,
+            StomachSystem.DefaultSolutionName,
+            ref ent.Comp.Solution,
+            out solution))
+            return false;
+
+        return solution != null;
     }
 
     /// <summary>
