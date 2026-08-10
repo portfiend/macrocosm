@@ -11,14 +11,7 @@ namespace Content.Shared._MACRO.Species.Kodepiia.Consume;
 /// </summary>
 public sealed partial class ConsumedSystem : EntitySystem
 {
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        SubscribeLocalEvent<ConsumedComponent, ExaminedEvent>(OnExamine);
-        SubscribeLocalEvent<ConsumedComponent, MobStateChangedEvent>(OnMobStateChange);
-    }
-
+    [SubscribeLocalEvent]
     private void OnExamine(Entity<ConsumedComponent> ent, ref ExaminedEvent args)
     {
         var consumed = ent.Comp.ConsumedValue;
@@ -34,6 +27,7 @@ public sealed partial class ConsumedSystem : EntitySystem
         args.PushMarkup(Loc.GetString(examineTooltip, ("target", target)));
     }
 
+    [SubscribeLocalEvent]
     private void OnMobStateChange(Entity<ConsumedComponent> ent, ref MobStateChangedEvent args)
     {
         // If the entity is like, revived, it should no longer be considered "consumed"
