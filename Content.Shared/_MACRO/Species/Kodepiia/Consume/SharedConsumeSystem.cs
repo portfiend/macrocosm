@@ -389,10 +389,10 @@ public abstract partial class SharedConsumeSystem : EntitySystem
         solution = null;
 
         if (!Resolve(ent.Owner, ref ent.Comp)
-            || _solutionContainer.ResolveSolution(ent.Owner,
-            StomachSystem.DefaultSolutionName,
-            ref ent.Comp.Solution,
-            out solution))
+            || !_solutionContainer.ResolveSolution(ent.Owner,
+                StomachSystem.DefaultSolutionName,
+                ref ent.Comp.Solution,
+                out solution))
             return false;
 
         return solution != null;
