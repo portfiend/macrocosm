@@ -1,7 +1,7 @@
 - type: species
   id: Ungu
   name: species-name-ungu
-  roundStart: true
+  roundStart: false
   #randomViable: true
   prototype: MobUngu
   dollPrototype: AppearanceUngu
