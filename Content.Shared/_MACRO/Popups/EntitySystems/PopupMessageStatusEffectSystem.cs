@@ -63,8 +63,7 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
         if (statusEffect.AppliedTo == null)
             return;
 
-        var xform = Transform(statusEffect.AppliedTo.Value);
-        _popupEffect.PopupMessage((statusEffect.AppliedTo.Value, xform),
+        _popupEffect.PopupMessage(statusEffect.AppliedTo.Value,
             popupComp.Messages,
             popupComp.VisualType,
             popupComp.Method,
