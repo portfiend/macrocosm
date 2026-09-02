@@ -16,14 +16,6 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        SubscribeLocalEvent<IntervalPopupMessageStatusEffectComponent, StatusEffectAppliedEvent>(OnIntervalPopupApplied);
-        SubscribeLocalEvent<ExpiryPopupMessageStatusEffectComponent, StatusEffectRemovedEvent>(OnExpiredPopupRemoved);
-    }
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -39,11 +31,13 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
         }
     }
 
+    [SubscribeLocalEvent]
     private void OnIntervalPopupApplied(Entity<IntervalPopupMessageStatusEffectComponent> ent, ref StatusEffectAppliedEvent args)
     {
         UpdatePopupIntervalTime(ent);
     }
 
+    [SubscribeLocalEvent]
     private void OnExpiredPopupRemoved(Entity<ExpiryPopupMessageStatusEffectComponent> ent, ref StatusEffectRemovedEvent args)
     {
         SpawnPopup((ent.Owner, null), ent.Comp);
