@@ -1,11 +1,11 @@
-using Content.Shared._DEN.StatusEffects.Components;
+using Content.Shared._MACRO.Popups.Components;
 using Content.Shared.EntityEffects.Effects.Transform;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.StatusEffectNew.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
-namespace Content.Shared._DEN.StatusEffects.EntitySystems;
+namespace Content.Shared._MACRO.Popups.EntitySystems;
 
 /// <summary>
 ///     This system handles displaying popup messages for various popup message status effects.

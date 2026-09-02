@@ -1,7 +1,7 @@
 using Content.Shared.EntityEffects.Effects.Transform;
 using Content.Shared.Popups;
 
-namespace Content.Shared._DEN.StatusEffects.Components;
+namespace Content.Shared._MACRO.Popups.Components;
 
 /// <summary>
 ///     Abstract class for status effects that show popup messages.

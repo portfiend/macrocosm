@@ -1,4 +1,4 @@
-namespace Content.Shared._DEN.StatusEffects.Components;
+namespace Content.Shared._MACRO.Popups.Components;
 
 /// <summary>
 ///     A status effect that will create a popup message on the entity upon the status effect expiring.

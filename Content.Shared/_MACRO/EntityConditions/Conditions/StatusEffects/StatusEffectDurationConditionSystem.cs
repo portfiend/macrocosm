@@ -3,7 +3,7 @@ using Content.Shared.StatusEffectNew;
 using Content.Shared.StatusEffectNew.Components;
 using Robust.Shared.Prototypes;
 
-namespace Content.Shared._DEN.EntityCondiitons.Conditions.Body;
+namespace Content.Shared._MACRO.EntityCondiitons.Conditions.StatusEffects;
 
 /// <summary>
 /// Returns true if this entity has a status effect within a certain range of durations.
