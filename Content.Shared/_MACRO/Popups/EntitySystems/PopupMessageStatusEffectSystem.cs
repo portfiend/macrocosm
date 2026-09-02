@@ -36,6 +36,26 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     }
 
     /// <summary>
+    ///     Spawns a popup when this status effect is applied.
+    /// </summary>
+    /// <param name="ent">The initial popup status effect.</param>
+    [SubscribeLocalEvent]
+    private void OnInitialPopupApplied(Entity<InitialPopupMessageStatusEffectComponent> ent, ref StatusEffectAppliedEvent args)
+    {
+        SpawnPopup(ent.Owner, ent.Comp);
+    }
+
+    /// <summary>
+    ///     Spawns a popup when this status effect is removed.
+    /// </summary>
+    /// <param name="ent">The expiry popup status effect.</param>
+    [SubscribeLocalEvent]
+    private void OnExpiredPopupRemoved(Entity<ExpiryPopupMessageStatusEffectComponent> ent, ref StatusEffectRemovedEvent args)
+    {
+        SpawnPopup(ent.Owner, ent.Comp);
+    }
+
+    /// <summary>
     ///     Initializes the first popup interval when this status effect is added.
     /// </summary>
     /// <param name="ent">The interval popup status effect.</param>
@@ -46,13 +66,17 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     }
 
     /// <summary>
-    ///     Spawns a popup when this status effect is removed.
+    ///     Sets the next popup message spawn time for an interval popup effect.
     /// </summary>
-    /// <param name="ent">The expiry popup status effect.</param>
-    [SubscribeLocalEvent]
-    private void OnExpiredPopupRemoved(Entity<ExpiryPopupMessageStatusEffectComponent> ent, ref StatusEffectRemovedEvent args)
+    /// <param name="ent">The interval popup status effect.</param>
+    private void UpdatePopupIntervalTime(Entity<IntervalPopupMessageStatusEffectComponent> ent)
     {
-        SpawnPopup((ent.Owner, null), ent.Comp);
+        var comp = ent.Comp;
+        var (min, max) = comp.Interval;
+        var newInterval = _random.NextDouble(min.TotalSeconds, max.TotalSeconds);
+
+        comp.NextPopupTime = _timing.CurTime + TimeSpan.FromSeconds(newInterval);
+        Dirty(ent);
     }
 
     /// <summary>
@@ -74,19 +98,5 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
             popupComp.VisualType,
             popupComp.Method,
             popupComp.Recipients);
-    }
-
-    /// <summary>
-    ///     Sets the next popup message spawn time for an interval popup effect.
-    /// </summary>
-    /// <param name="ent">The interval popup status effect.</param>
-    private void UpdatePopupIntervalTime(Entity<IntervalPopupMessageStatusEffectComponent> ent)
-    {
-        var comp = ent.Comp;
-        var (min, max) = comp.Interval;
-        var newInterval = _random.NextDouble(min.TotalSeconds, max.TotalSeconds);
-
-        comp.NextPopupTime = _timing.CurTime + TimeSpan.FromSeconds(newInterval);
-        Dirty(ent);
     }
 }
