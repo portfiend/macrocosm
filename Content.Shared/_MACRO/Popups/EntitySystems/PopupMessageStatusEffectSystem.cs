@@ -16,6 +16,10 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
 
+    /// <summary>
+    ///     Checks status effects that may need to trigger a popup on a given interval.
+    /// </summary>
+    /// <inheritdoc />
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -31,12 +35,20 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    ///     Initializes the first popup interval when this status effect is added.
+    /// </summary>
+    /// <param name="ent">The interval popup status effect.</param>
     [SubscribeLocalEvent]
     private void OnIntervalPopupApplied(Entity<IntervalPopupMessageStatusEffectComponent> ent, ref StatusEffectAppliedEvent args)
     {
         UpdatePopupIntervalTime(ent);
     }
 
+    /// <summary>
+    ///     Spawns a popup when this status effect is removed.
+    /// </summary>
+    /// <param name="ent">The expiry popup status effect.</param>
     [SubscribeLocalEvent]
     private void OnExpiredPopupRemoved(Entity<ExpiryPopupMessageStatusEffectComponent> ent, ref StatusEffectRemovedEvent args)
     {
