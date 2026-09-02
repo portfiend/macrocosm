@@ -1,3 +1,5 @@
+using Robust.Shared.GameStates;
+
 namespace Content.Shared._MACRO.Popups.Components;
 
 /// <summary>
@@ -9,6 +11,7 @@ namespace Content.Shared._MACRO.Popups.Components;
 ///     making it more consistent.
 /// </remarks>
 [RegisterComponent]
+[NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
 public sealed partial class IntervalPopupMessageStatusEffectComponent : PopupMessageStatusEffectComponent
 {
     /// <summary>
@@ -21,5 +24,6 @@ public sealed partial class IntervalPopupMessageStatusEffectComponent : PopupMes
     ///     The next time we should display a popup message.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
+    [AutoNetworkedField, AutoPausedField]
     public TimeSpan NextPopupTime = TimeSpan.Zero;
 }

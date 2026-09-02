@@ -1,3 +1,5 @@
+using Robust.Shared.GameStates;
+
 namespace Content.Shared._MACRO.Popups.Components;
 
 /// <summary>
@@ -9,5 +11,6 @@ namespace Content.Shared._MACRO.Popups.Components;
 ///     making it more consistent.
 /// </remarks>
 [RegisterComponent]
+[NetworkedComponent]
 public sealed partial class ExpiryPopupMessageStatusEffectComponent : PopupMessageStatusEffectComponent
 { }

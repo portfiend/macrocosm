@@ -81,5 +81,6 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
         var newInterval = _random.NextDouble(min.TotalSeconds, max.TotalSeconds);
 
         comp.NextPopupTime = _timing.CurTime + TimeSpan.FromSeconds(newInterval);
+        Dirty(ent);
     }
 }
