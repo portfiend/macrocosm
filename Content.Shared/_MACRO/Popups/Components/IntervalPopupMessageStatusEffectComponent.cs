@@ -1,4 +1,5 @@
 using Robust.Shared.GameStates;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._MACRO.Popups.Components;
 
@@ -23,7 +24,7 @@ public sealed partial class IntervalPopupMessageStatusEffectComponent : PopupMes
     /// <summary>
     ///     The next time we should display a popup message.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite)]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoNetworkedField, AutoPausedField]
     public TimeSpan NextPopupTime = TimeSpan.Zero;
 }
