@@ -36,4 +36,10 @@ public abstract partial class PopupMessageStatusEffectComponent : Component
     /// </summary>
     [DataField]
     public PopupType VisualType = PopupType.Small;
+
+    /// <summary>
+    /// The chance of this popup actually appearing.
+    /// </summary>
+    [DataField]
+    public float Chance = 1.0f;
 }

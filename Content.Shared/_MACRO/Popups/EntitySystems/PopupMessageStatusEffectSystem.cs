@@ -1,5 +1,6 @@
 using Content.Shared._MACRO.Popups.Components;
 using Content.Shared.EntityEffects.Effects.Transform;
+using Content.Shared.Random.Helpers;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.StatusEffectNew.Components;
 using Robust.Shared.Random;
@@ -13,7 +14,6 @@ namespace Content.Shared._MACRO.Popups.EntitySystems;
 public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
 {
     [Dependency] private PopupMessageEntityEffectSystem _popupEffect = default!;
-    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
 
     /// <summary>
@@ -73,7 +73,8 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     {
         var comp = ent.Comp;
         var (min, max) = comp.Interval;
-        var newInterval = _random.NextDouble(min.TotalSeconds, max.TotalSeconds);
+        var random = SharedRandomExtensions.PredictedRandom(_timing, GetNetEntity(ent));
+        var newInterval = random.NextDouble(min.TotalSeconds, max.TotalSeconds);
 
         comp.NextPopupTime = _timing.CurTime + TimeSpan.FromSeconds(newInterval);
         Dirty(ent);
@@ -86,9 +87,15 @@ public sealed partial class PopupMessageStatusEffectSystem : EntitySystem
     /// <param name="popupComp">The popup message component associated with this effect.</param>
     private void SpawnPopup(Entity<StatusEffectComponent?> ent, PopupMessageStatusEffectComponent popupComp)
     {
-        if (!Resolve(ent.Owner, ref ent.Comp))
+        if (!Resolve(ent.Owner, ref ent.Comp) || popupComp.Chance <= 0)
             return;
 
+        // Random chance to fail the popup.
+        var random = SharedRandomExtensions.PredictedRandom(_timing, GetNetEntity(ent));
+        if (popupComp.Chance < 1.0f && random.NextFloat() > popupComp.Chance)
+            return;
+
+        // Status effect must belong to an entity.
         var statusEffect = ent.Comp;
         if (statusEffect.AppliedTo == null)
             return;
