@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.EntityEffects;
 using Content.Shared.Localizations;
 using Content.Shared.Metabolism;
 using Robust.Shared.Prototypes;
@@ -18,6 +19,7 @@ public sealed partial class MetabolizerTypeCondition : EntityConditionBase<Metab
     public override string EntityConditionGuidebookText(IPrototypeManager prototype)
     {
         var typeList = new List<string>();
+        var allHidden = Type.Length > 0; // MACRO: Keep track if all metabolizers are hidden from the guidebook
 
         foreach (var type in Type)
         {
@@ -25,6 +27,7 @@ public sealed partial class MetabolizerTypeCondition : EntityConditionBase<Metab
                 continue;
 
             // MACRO: Do not show this metabolizer type if it's hidden from the guidebook.
+            allHidden = allHidden && !proto.ShowInGuidebook;
             if (!proto.ShowInGuidebook)
                 continue;
 
@@ -32,8 +35,8 @@ public sealed partial class MetabolizerTypeCondition : EntityConditionBase<Metab
         }
 
         // MACRO: This requirement gets hidden entirely if all metabolizers are hidden.
-        if (typeList.Count == 0)
-            return ReagentPrototype.HideEffectTag;
+        if (allHidden)
+            return EntityEffect.HideEffectTag;
 
         var names = ContentLocalizationManager.FormatListToOr(typeList);
 
