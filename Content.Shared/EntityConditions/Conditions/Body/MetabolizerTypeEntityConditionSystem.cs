@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Localizations;
 using Content.Shared.Metabolism;
 using Robust.Shared.Prototypes;
@@ -23,8 +24,16 @@ public sealed partial class MetabolizerTypeCondition : EntityConditionBase<Metab
             if (!prototype.Resolve(type, out var proto))
                 continue;
 
+            // MACRO: Do not show this metabolizer type if it's hidden from the guidebook.
+            if (!proto.ShowInGuidebook)
+                continue;
+
             typeList.Add(proto.LocalizedName);
         }
+
+        // MACRO: This requirement gets hidden entirely if all metabolizers are hidden.
+        if (typeList.Count == 0)
+            return ReagentPrototype.HideEffectTag;
 
         var names = ContentLocalizationManager.FormatListToOr(typeList);
 

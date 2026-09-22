@@ -224,6 +224,12 @@ namespace Content.Shared.Chemistry.Reagent
 
             var quantity = (double)(effect.MinScale * metabolism);
 
+            // Begin MACRO: Add the ability to hide conditions from the guidebook.
+            var conditions = effect.GetConditions(prototype, out var showEntry);
+            if (!showEntry)
+                return null;
+            // End MACRO
+
             return Loc.GetString(
                 "guidebook-reagent-effect-description",
                 ("reagent", LocalizedName),
@@ -231,10 +237,7 @@ namespace Content.Shared.Chemistry.Reagent
                 ("effect", description),
                 ("chance", effect.Probability),
                 ("conditionCount", effect.Conditions?.Length ?? 0),
-                ("conditions",
-                    ContentLocalizationManager.FormatList(
-                        effect.Conditions?.Select(x => x.EntityConditionGuidebookText(prototype)).ToList() ?? new List<string>()
-                    )));
+                ("conditions", conditions)); // MACRO: Use condition string function
         }
     }
 
