@@ -20,3 +20,7 @@
   - !Index:5 Ovinia
   # Above "Vox"
   - !Index:7 Ungu
+
+# If you are enabling or disabling certain species from the guidebook, you should probably add
+# the "doll" entity preview of the species to the guidebook entry at this location:
+# Resources/ServerInfo/_MACRO/Guidebook/Mobs/Species.xml
