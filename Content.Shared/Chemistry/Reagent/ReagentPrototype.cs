@@ -225,7 +225,7 @@ namespace Content.Shared.Chemistry.Reagent
             var quantity = (double)(effect.MinScale * metabolism);
 
             // Begin MACRO: Add the ability to hide conditions from the guidebook.
-            var conditions = effect.GetConditions(prototype, out var showEntry);
+            var conditions = effect.GetConditions(prototype, out int count, out var showEntry);
             if (!showEntry)
                 return null;
             // End MACRO
@@ -236,7 +236,7 @@ namespace Content.Shared.Chemistry.Reagent
                 ("quantity", quantity),
                 ("effect", description),
                 ("chance", effect.Probability),
-                ("conditionCount", effect.Conditions?.Length ?? 0),
+                ("conditionCount", count), // MACRO: Use provided valid condition count
                 ("conditions", conditions)); // MACRO: Use condition string function
         }
     }

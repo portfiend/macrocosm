@@ -30,15 +30,14 @@ public sealed partial class NestedEffect : EntityEffectBase<NestedEffect>
                 continue;
 
             // Begin MACRO: Allow hiding conditions from guidebook
-            var conditions = effect.GetConditions(prototype, out var showEntry);
+            var conditions = effect.GetConditions(prototype, out int count, out var showEntry);
             if (!showEntry)
                 continue;
 
-            var conditionCount = effect.Conditions?.Length ?? 0;
             var desc = Loc.GetString("guidebook-nested-effect-description",
                 ("effect", text),
                 ("chance", effect.Probability),
-                ("conditionCount", conditionCount),
+                ("conditionCount", count),
                 ("conditions", conditions));
             // End MACRO
             _effects.Add(desc);

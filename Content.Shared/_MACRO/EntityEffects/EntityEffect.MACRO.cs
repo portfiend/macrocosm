@@ -17,14 +17,17 @@ public abstract partial class EntityEffect
     /// <summary>
     ///     Get a localized string representation of this effect's conditions.
     /// </summary>
+    /// <param name="count">The number of valid conditions.</param>
     /// <param name="showEntry">Whether or not this effect should be shown in the guidebook.</param>
-    public string GetConditions(IPrototypeManager prototype, out bool showEntry)
+    public string GetConditions(IPrototypeManager prototype, out int count, out bool showEntry)
     {
         showEntry = true;
         var conditions = Conditions?
             .Select(x => x.EntityConditionGuidebookText(prototype))
             .Where(x => x != string.Empty)
             .ToList() ?? new();
+
+        count = conditions.Count;
 
         // Hide this entry if one of the conditions indicates it should be hidden.
         if (conditions.Contains(HideEffectTag))
