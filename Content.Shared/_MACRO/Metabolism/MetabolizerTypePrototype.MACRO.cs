@@ -9,5 +9,5 @@ public sealed partial class MetabolizerTypePrototype
     ///     when included in a <seealso cref="MetabolizerTypeCondition"/>.
     /// </summary>
     [DataField]
-    public bool ShowInGuidebook;
+    public bool ShowInGuidebook = true;
 }

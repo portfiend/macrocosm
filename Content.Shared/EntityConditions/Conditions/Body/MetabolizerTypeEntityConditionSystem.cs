@@ -34,9 +34,19 @@ public sealed partial class MetabolizerTypeCondition : EntityConditionBase<Metab
             typeList.Add(proto.LocalizedName);
         }
 
-        // MACRO: This requirement gets hidden entirely if all metabolizers are hidden.
+        // Begin MACRO: This requirement gets hidden entirely if all metabolizers are hidden.
         if (allHidden)
-            return EntityEffect.HideEffectTag;
+        {
+            // Pretend there's no conditions if this is inverted, because it hypothetically should never be "failed".
+            // "Adds 5 seconds of status effect [if the metabolizing organ is not an Allulalo organ.]"
+            if (Inverted)
+                return string.Empty;
+            // The whole effect should be hidden if it's not inverted, because it hypothetically should never pass.
+            // "Adds 5 seconds of status effect [if the metabolizing organ is an Allulalo organ.]"
+            else
+                return EntityEffect.HideEffectTag;
+        }
+        // End MACRO
 
         var names = ContentLocalizationManager.FormatListToOr(typeList);
 
