@@ -35,6 +35,7 @@
   - type: Tag
     tags:
     - Bread
+    - Ingredient
     - Slice
   - type: Solution
     solution:
@@ -95,8 +96,9 @@
       amount: 8
   - type: Tag
     tags:
-    - Fruit
     - Bread
+    - FinishedMeal
+    - Fruit
 # Tastes like bread, banana, nut.
 
 - type: entity
@@ -114,8 +116,9 @@
     - state: banana-slice
   - type: Tag
     tags:
-    - Fruit
     - Bread
+    - FinishedMeal
+    - Fruit
     - Slice
 
 - type: entity
@@ -139,8 +142,9 @@
       amount: 8
   - type: Tag
     tags:
-    - ClothMade
     - Bread
+    - ClothMade
+    - FinishedMeal
   - type: Solution
     solution:
       reagents:
@@ -166,8 +170,9 @@
     - state: cotton-slice
   - type: Tag
     tags:
-    - ClothMade
     - Bread
+    - ClothMade
+    - Ingredient
     - Slice
   - type: Solution
     solution:
@@ -307,8 +312,10 @@
         Quantity: 4
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - FinishedMeal
+    - Ingredient
+    - Meat
 # Tastes like bread, meat.
 
 - type: entity
@@ -335,8 +342,8 @@
         Quantity: 0.5
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - Meat
     - Slice
 
 - type: entity
@@ -460,8 +467,8 @@
         Quantity: 10
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - Meat
 
 - type: entity
   name: sausage bread slice
@@ -485,8 +492,9 @@
         Quantity: 1.25
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - FinishedMeal
+    - Meat
     - Slice
 
 - type: entity
@@ -517,8 +525,8 @@
         Quantity: 4
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - Meat
 # Tastes like bread, cobwebs.
 
 - type: entity
@@ -545,8 +553,9 @@
         Quantity: 0.5
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - FinishedMeal
+    - Meat
     - Slice
 
 - type: entity
@@ -634,8 +643,9 @@
         Quantity: 4
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - FinishedMeal
+    - Meat
 # Tastes like bread, acid.
 
 - type: entity
@@ -662,8 +672,9 @@
         Quantity: 0.5
   - type: Tag
     tags:
-    - Meat
     - Bread
+    - FinishedMeal
+    - Meat
     - Slice
 
 # Other than bread/slice:
@@ -734,6 +745,7 @@
     tags:
     - Bread
     - ClothMade
+    - FinishedMeal
   - type: Clothing
     equippedPrefix: baguette-cotton
   - type: Item
@@ -797,8 +809,9 @@
   - type: Tag
     tags:
     - Bread
-    - Slice
     - ClothMade
+    - Ingredient
+    - Slice
   - type: Solution
     solution:
       reagents:
@@ -1043,10 +1056,11 @@
     baseSprintSpeed : 3
   - type: Tag
     tags:
-    - VimPilot
-    - DoorBumpOpener
     - Bread
+    - DoorBumpOpener
+    - FinishedMeal
     - Meat
+    - VimPilot
   - type: CanEscapeInventory
     baseResistTime: 2
   - type: Puller
@@ -1078,6 +1092,7 @@
   - type: Tag
     tags:
     - ReptilianFood
+    - FinishedMeal
   - type: FlavorProfile
     flavors:
     - nutribrick
@@ -1104,6 +1119,7 @@
   - type: Tag
     tags:
     - ClothMade
+    - FinishedMeal
   - type: Item
     size: Small
     storedOffset: -1,0

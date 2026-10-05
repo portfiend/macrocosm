@@ -615,6 +615,9 @@
         Quantity: 15
       - ReagentId: Vodka
         Quantity: 5
+  - type: Tag
+    tags:
+    - FinishedMeal
 
 # Soup
 
@@ -842,6 +845,7 @@
   - type: Tag
     tags:
     - ChiliBowl
+    - FinishedMeal
 
 
 - type: entity
@@ -876,6 +880,7 @@
   - type: Tag
     tags:
     - ChiliBowl
+    - FinishedMeal
 
 - type: entity
   name: chili con carnival
@@ -896,6 +901,7 @@
   - type: Tag
     tags:
     - ChiliBowl
+    - FinishedMeal
 
 - type: entity
   name: monkey's delight
