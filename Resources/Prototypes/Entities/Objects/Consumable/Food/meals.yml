@@ -118,11 +118,6 @@
       - nachos
   - type: Sprite
     state: nachos
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
@@ -149,11 +144,6 @@
       - cheesy
   - type: Sprite
     state: nachos-cheesy
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
@@ -181,11 +171,6 @@
       - spicy
   - type: Sprite
     state: nachos-cuban
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
@@ -513,11 +498,6 @@
         - cheesy
     - type: Sprite
       state: queso
-    # macro edit start - allow ungu to eat
-    - type: Tag
-      tags:
-      - UnguFood
-    # macro edit end
 # Its queso! Everyone loves queso... Right?.
 
 - type: entity

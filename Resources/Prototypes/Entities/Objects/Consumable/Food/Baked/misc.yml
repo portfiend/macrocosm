@@ -537,11 +537,6 @@
       - smokey
   - type: Sprite
     state: chevrechaud
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
@@ -763,11 +758,6 @@
       - butter
   - type: Sprite
     state: croissant
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
@@ -831,11 +821,6 @@
   - type: Sprite
     sprite: Objects/Consumable/Food/Baked/misc.rsi
     state: grilled-cheese
-  # macro edit start - allow ungu to eat
-  - type: Tag
-    tags:
-    - UnguFood
-  # macro edit end
   - type: Solution
     solution:
       reagents:
