@@ -98,12 +98,12 @@ public sealed partial class DockingSystem : SharedDockingSystem
     }
 
     [SubscribeLocalEvent]
-    private void OnDockingMove(Entity<DockingComponent> entity, ref MoveEvent args)
+    private void OnDockingReAnchor(Entity<DockingComponent> entity, ref ReAnchorEvent args)
     {
         var uid = entity.Owner;
         var component = entity.Comp;
 
-        if (!component.Docked || args.OnlyRotation)
+        if (!component.Docked)
             return;
 
         var otherDock = component.DockedWith;
