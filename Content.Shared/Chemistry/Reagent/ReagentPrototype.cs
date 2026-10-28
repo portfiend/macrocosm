@@ -236,8 +236,15 @@ namespace Content.Shared.Chemistry.Reagent
                 ("quantity", quantity),
                 ("effect", description),
                 ("chance", effect.Probability),
-                ("conditionCount", count), // MACRO: Use provided valid condition count
-                ("conditions", conditions)); // MACRO: Use condition string function
+                // Begin MACRO: Replace condition values
+                // ("conditionCount", effect.Conditions?.Length ?? 0),
+                // ("conditions",
+                //     ContentLocalizationManager.FormatList(
+                //         effect.Conditions?.Select(x => x.EntityConditionGuidebookText(prototype)).ToList() ?? new List<string>()
+                //     )));
+                ("conditionCount", count),
+                ("conditions", conditions));
+                // End Macro
         }
     }
 

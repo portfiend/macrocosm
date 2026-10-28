@@ -30,6 +30,16 @@ public sealed partial class NestedEffect : EntityEffectBase<NestedEffect>
                 continue;
 
             // Begin MACRO: Allow hiding conditions from guidebook
+            // // basically GuidebookReagentEffectDescription but independent of reagents and no linq
+            // _conditions.Clear();
+            // if (effect.Conditions is {} conditions)
+            // {
+            //     foreach (var condition in conditions)
+            //     {
+            //         _conditions.Add(condition.EntityConditionGuidebookText(prototype));
+            //     }
+            // }
+
             var conditions = effect.GetConditions(prototype, out int count, out var showEntry);
             if (!showEntry)
                 continue;
@@ -37,6 +47,8 @@ public sealed partial class NestedEffect : EntityEffectBase<NestedEffect>
             var desc = Loc.GetString("guidebook-nested-effect-description",
                 ("effect", text),
                 ("chance", effect.Probability),
+                // ("conditionCount", _conditions.Count),
+                // ("conditions", ContentLocalizationManager.FormatList(_conditions)));
                 ("conditionCount", count),
                 ("conditions", conditions));
             // End MACRO

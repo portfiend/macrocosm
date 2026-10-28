@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Content.Shared.Chemistry.Reagent;
-using Content.Shared.EntityEffects;
+using Content.Shared.Chemistry.Reagent; // MACRO
+using Content.Shared.EntityEffects; // MACRO
 using Content.Shared.Localizations;
 using Content.Shared.Metabolism;
 using Robust.Shared.Prototypes;
